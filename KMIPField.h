@@ -17,6 +17,8 @@ class KMIPField {
         virtual kmipsize_t setCalculatedLength();
         virtual std::string getValueString() const;
 
+        virtual bool isValid() const;
+
         virtual bool setValueFromTTLV(const std::string &sValue);
         virtual std::string getTTLVValue() const;
 

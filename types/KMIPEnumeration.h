@@ -14,6 +14,8 @@ class KMIPEnumeration : public KMIPNumber<uint32_t> {
         uint32_t eLast;
 };
 
+typedef std::unique_ptr<KMIPEnumeration> KMIPEnumerationUP;
+
 class KMIPCredentialType : public KMIPEnumeration {
 #define CREDENTIAL_TYPE_LIST(a,b)\
     b(Unknown,0)\
@@ -1043,49 +1045,6 @@ class KMIPMaskGenerator : public KMIPEnumeration {
 };
 
 
-/*
-class KMIPBitMasks : public KMIPEnumeration {
-#define BIT_MASKS_LIST(a,b) \
-	DECLARE_ENUM_LIST(VALUE, BIT_MASKS_LIST)
-	KMIPBitMasks(uint32_t eValue);
-};
-
-class KMIPCryptographicUsageMask : public KMIPEnumeration {
-#define CRYPTOGRAPHIC_USAGE_MASK_LIST(a,b) \
-	b(Sign,	0x1) \
-	b(Verify,	0x2) \
-	b(Encrypt,	0x4) \
-	b(Decrypt,	0x8) \
-	b(WrapKey,	0x10) \
-	b(UnwrapKey,	0x20) \
-	b(Export,	0x40) \
-	b(MACGenerate,	0x80) \
-	b(MACVerify,	0x100) \
-	b(DeriveKey,	0x200) \
-	b(ContentCommitment,	0x400) \
-	b(KeyAgreement,	0x800) \
-	b(CertificateSign,	0x1000) \
-	b(CRLSign,	0x2000) \
-	b(GenerateCryptogram,	0x4000) \
-	b(ValidateCryptogram,	0x8000) \
-	b(TranslateEncrypt,	0x10000) \
-	b(TranslateDecrypt,	0x20000) \
-	b(TranslateWrap,	0x40000) \
-	b(TranslateUnwrap,	0x80000) \
-
-	DECLARE_ENUM_LIST(VALUE, CRYPTOGRAPHIC_USAGE_MASK_LIST)
-	KMIPCryptographicUsageMask(uint32_t eValue);
-};
-
-class KMIPStorageStatusMask : public KMIPEnumeration {
-#define STORAGE_STATUS_MASK_LIST(a,b) \
-	b(OnLineStorage,	0x1) \
-	b(ArchivalStorage,	0x2) \
-
-	DECLARE_ENUM_LIST(VALUE, STORAGE_STATUS_MASK_LIST)
-	KMIPStorageStatusMask(uint32_t eValue);
-};
-*/
 
 
 #endif

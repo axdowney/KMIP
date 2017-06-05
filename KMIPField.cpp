@@ -52,6 +52,10 @@ std::string KMIPField::getValueString() const {
     return "";
 }
 
+bool KMIPField::isValid() const {
+    return true;
+}
+
 bool KMIPField::setValueFromTTLV(const std::string &sValue) {
     return false;
 }

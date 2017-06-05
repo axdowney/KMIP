@@ -4,6 +4,15 @@
 #include "KMIPEnumeration.h"
 #include "KMIPString.h"
 #include "KMIPDateTime.h"
+#include "KMIPFactory.h"
+#include "KMIPEnumFactory.h"
+#include "KMIPFieldOrders.h"
+
+std::map<int, std::shared_ptr<KMIPFactory> > KMIPUtils::mapKMIPFactories = {
+    {kmip::TypeEnumeration, std::shared_ptr<KMIPFactory>(new KMIPEnumFactory())}
+};
+
+std::shared_ptr<KMIPFieldOrders> KMIPUtils::spkfos(new KMIPFieldOrders);
 
 KMIPFieldUP KMIPUtils::createField(int iTag, int iType) {
     KMIPFieldUP upkf;
@@ -21,7 +30,7 @@ KMIPFieldUP KMIPUtils::createField(int iTag, int iType) {
             upkf.reset(new KMIPBigInteger(iTag));
             break;
         case kmip::TypeEnumeration:
-            upkf.reset(new KMIPEnumeration(iTag));
+            upkf = mapKMIPFactories[iType]->createField(iTag);
             break;
         case kmip::TypeBoolean:
             upkf.reset(new KMIPBoolean(iTag));
@@ -43,6 +52,10 @@ KMIPFieldUP KMIPUtils::createField(int iTag, int iType) {
     }
 
     return upkf;
+}
+
+KMIPFieldOrder *KMIPUtils::getKMIPFieldOrder(int iTag, int iType) {
+    return spkfos ? spkfos->getKMIPFieldOrder(iTag, iType) : nullptr;
 }
 
 std::string KMIPUtils::TypeToString(int iType) {

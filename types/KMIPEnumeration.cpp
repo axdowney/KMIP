@@ -159,14 +159,3 @@ IMPLEMENT_ENUM_TO_STRING(KMIPKeyWrapType, VALUE, Unknown, "", KEY_WRAP_TYPE_LIST
 
 KMIPMaskGenerator::KMIPMaskGenerator(uint32_t eValue) : KMIPEnumeration(kmip::TagMaskGenerator, eValue, KMIPMaskGenerator::Unknown, KMIPMaskGenerator::NumValues) {}
 IMPLEMENT_ENUM_TO_STRING(KMIPMaskGenerator, VALUE, Unknown, "", MASK_GENERATOR_LIST);
-
-/*KMIPBitMasks::KMIPBitMasks(uint32_t eValue) : KMIPEnumeration(kmip::TagBitMasks, eValue, KMIPBitMasks::Unknown, KMIPBitMasks::NumValues) {}
-IMPLEMENT_ENUM_TO_STRING(KMIPBitMasks, VALUE, Unknown, "", BIT_MASKS_LIST);
-
-KMIPCryptographicUsageMask::KMIPCryptographicUsageMask(uint32_t eValue) : KMIPEnumeration(kmip::TagCryptographicUsageMask, eValue, KMIPCryptographicUsageMask::Unknown, KMIPCryptographicUsageMask::NumValues) {}
-IMPLEMENT_ENUM_TO_STRING(KMIPCryptographicUsageMask, VALUE, Unknown, "", CRYPTOGRAPHIC_USAGE_MASK_LIST);
-
-KMIPStorageStatusMask::KMIPStorageStatusMask(uint32_t eValue) : KMIPEnumeration(kmip::TagStorageStatusMask, eValue, KMIPStorageStatusMask::Unknown, KMIPStorageStatusMask::NumValues) {}
-IMPLEMENT_ENUM_TO_STRING(KMIPStorageStatusMask, VALUE, Unknown, "", STORAGE_STATUS_MASK_LIST);*/
-
-
