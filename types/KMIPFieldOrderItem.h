@@ -17,11 +17,14 @@ class KMIPFieldOrderItem {
 
         KMIPFieldOrderItem(int iTag, int iType, int iMin = 0, int iMax = 1);
 
-        int getItem(Item eItem);
-        int getTag();
-        int getType();
-        int getMin();
-        int getMax();
+        int getItem(Item eItem) const;
+        int getTag() const;
+        int getType() const;
+        int getMin() const;
+        int getMax() const;
+
+        bool tagMatches(int iTag) const;
+        bool typeMatches(int iType) const;
 
     protected:
         std::vector<int> vecItems;

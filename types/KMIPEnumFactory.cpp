@@ -156,6 +156,7 @@ KMIPEnumerationUP KMIPEnumFactory::createEnumeration(int iTag, uint32_t eValue) 
             upke.reset(new KMIPMaskGenerator(eValue));
             break;
         default:
+            upke.reset(new KMIPEnumeration(iTag, eValue));
             break;
     }
     

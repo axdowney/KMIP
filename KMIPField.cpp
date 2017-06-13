@@ -1,13 +1,16 @@
 #include "KMIPField.h"
 #include "KMIPDefs.h"
+#include "KMIPUtils.h"
+
 KMIPField::KMIPField(int iTag, int iType) {
     this->iTag = iTag;
     this->iType = iType;
     iLength = KMIPField::kiInvalidLength;
+    bAttributeValue = false;
 }
 
 int KMIPField::getTag() const {
-    return iTag;
+    return bAttributeValue ? kmip::TagAttributeValue : iTag;
 }
 
 int KMIPField::getType() const {
@@ -48,12 +51,37 @@ kmipsize_t KMIPField::setCalculatedLength() {
     return getLength();
 }
 
+int KMIPField::getTrueTag() const {
+    return iTag;
+}
+
+bool KMIPField::isAttributeValueForced() const {
+    return bAttributeValue;
+}
+
+bool KMIPField::forceAttributeValue(bool bForce) {
+    return bAttributeValue = bForce;
+}
+
 std::string KMIPField::getValueString() const {
     return "";
 }
 
 bool KMIPField::isValid() const {
     return true;
+}
+
+
+KMIPFieldSP KMIPField::cloneShared() const {
+    return KMIPFieldSP(clone());
+}
+
+KMIPFieldUP KMIPField::cloneUnique() const {
+    return KMIPFieldUP(clone());
+}
+
+KMIPField *KMIPField::clone() const {
+    return KMIPUtils::createField(getTag(), getType()).release();
 }
 
 bool KMIPField::setValueFromTTLV(const std::string &sValue) {

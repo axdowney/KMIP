@@ -52,6 +52,6 @@ $(warning $(TEST_FILES))
 
 test: $(TESTDIR)/KMIPTest
 
-$(TESTDIR)/KMIPTest: $(SRCS) 
+$(TESTDIR)/KMIPTest: $(OBJS) 
 	${CXX} ${CPPFLAGS} ${INC} -o $(TESTDIR)/KMIPTest $(C_OBJS) $(OBJS) $(LIBS)
 

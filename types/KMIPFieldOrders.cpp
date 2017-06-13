@@ -1,8 +1,14 @@
 /* Copyright (C) 2017 Alexander Downey */
 
 #include "KMIPFieldOrders.h"
+#include "KMIPDefs.h"
 
 KMIPFieldOrders::KMIPFieldOrders() {
+    mapKFOs[kmip::TagAttribute][0] = {
+        KMIPFieldOrderItem(kmip::TagAttributeName, kmip::TypeTextString, 1),
+        KMIPFieldOrderItem(kmip::TagAttributeIndex, kmip::TypeInteger),
+        KMIPFieldOrderItem(kmip::TagAttributeValue, kmip::TypeUnknown)
+    };
 }
 
 

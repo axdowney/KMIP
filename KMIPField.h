@@ -5,6 +5,17 @@
 #include <memory>
 
 typedef int64_t kmipsize_t;
+class KMIPField;
+
+typedef std::shared_ptr<KMIPField> KMIPFieldSP;
+typedef std::unique_ptr<KMIPField> KMIPFieldUP;
+typedef std::weak_ptr<KMIPField>   KMIPFieldWP;
+
+typedef std::shared_ptr<const KMIPField> KMIPFieldSPK;
+typedef std::unique_ptr<const KMIPField> KMIPFieldUPK;
+typedef std::weak_ptr<const KMIPField>   KMIPFieldWPK;
+
+
 class KMIPField {
     public:
         KMIPField(int iTag, int iType);
@@ -17,20 +28,27 @@ class KMIPField {
         virtual kmipsize_t setCalculatedLength();
         virtual std::string getValueString() const;
 
+        int getTrueTag() const;
+        bool isAttributeValueForced() const;
+        bool forceAttributeValue(bool bForce = true);
+
         virtual bool isValid() const;
+        virtual KMIPFieldSP cloneShared() const;
+        virtual KMIPFieldUP cloneUnique() const;
 
         virtual bool setValueFromTTLV(const std::string &sValue);
         virtual std::string getTTLVValue() const;
 
         static const kmipsize_t kiInvalidLength = -1;
+    protected:
+        virtual KMIPField *clone() const;
+
     private:
         int iTag;
         int iType;
         kmipsize_t iLength;
         std::string sField;
+        bool bAttributeValue;
 };
-
-typedef std::shared_ptr<KMIPField> KMIPFieldSP;
-typedef std::unique_ptr<KMIPField> KMIPFieldUP;
 
 #endif

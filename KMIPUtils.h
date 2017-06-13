@@ -6,13 +6,16 @@
 #include <string>
 #include "KMIPField.h"
 #include "KMIPFieldOrder.h"
+//#include "KMIPAttributeRule.h"
 
 class KMIPFactory;
 class KMIPFieldOrders;
+class KMIPAttributeRule;
 class KMIPUtils {
     public:
         static KMIPFieldUP createField(int iTag, int iType);
         static KMIPFieldOrder *getKMIPFieldOrder(int iTag, int iType);
+        static std::shared_ptr<KMIPAttributeRule> getAttributeRule(int iTag);
         static bool isTagUnknown(int iTag);
         static bool isTagReserved(int iTag);
         static bool isTagExtension(int iTag);
@@ -26,6 +29,7 @@ class KMIPUtils {
         static const std::map<int, std::string> mapTagToString;
         static std::map<int, std::shared_ptr<KMIPFactory> > mapKMIPFactories;
         static std::shared_ptr<KMIPFieldOrders> spkfos;
+        static const std::map<int, std::shared_ptr<KMIPAttributeRule> > mapTagToRule;
 
 };
 

@@ -6,9 +6,12 @@
 #include "KMIPDateTime.h"
 #include "KMIPFactory.h"
 #include "KMIPEnumFactory.h"
+#include "KMIPStructFactory.h"
 #include "KMIPFieldOrders.h"
+#include "KMIPAttributeRule.h"
 
 std::map<int, std::shared_ptr<KMIPFactory> > KMIPUtils::mapKMIPFactories = {
+    {kmip::TypeStructure, std::shared_ptr<KMIPFactory>(new KMIPStructFactory())},
     {kmip::TypeEnumeration, std::shared_ptr<KMIPFactory>(new KMIPEnumFactory())}
 };
 
@@ -18,7 +21,7 @@ KMIPFieldUP KMIPUtils::createField(int iTag, int iType) {
     KMIPFieldUP upkf;
     switch (iType) {
         case kmip::TypeStructure:
-            upkf.reset(new KMIPStruct(iTag));
+            upkf = mapKMIPFactories[iType]->createField(iTag);
             break;
         case kmip::TypeInteger:
             upkf.reset(new KMIPInteger(iTag));
@@ -56,6 +59,11 @@ KMIPFieldUP KMIPUtils::createField(int iTag, int iType) {
 
 KMIPFieldOrder *KMIPUtils::getKMIPFieldOrder(int iTag, int iType) {
     return spkfos ? spkfos->getKMIPFieldOrder(iTag, iType) : nullptr;
+}
+
+std::shared_ptr<KMIPAttributeRule> KMIPUtils::getAttributeRule(int iTag) {
+    auto mapIter = mapTagToRule.find(iTag);
+    return mapIter == mapTagToRule.end() ? std::shared_ptr<KMIPAttributeRule>() : mapIter->second;
 }
 
 std::string KMIPUtils::TypeToString(int iType) {
@@ -447,4 +455,58 @@ const std::map<int, std::string> KMIPUtils::mapTagToString = {
         {kmip::TagEndReservedTags, "EndReservedTags"},
         {kmip::TagBegExtensionTags, "BegExtensionTags"},
         {kmip::TagEndExtensionTags, "EndExtensionTags"}
+};
+
+const std::map<int, std::shared_ptr<KMIPAttributeRule> > KMIPUtils::mapTagToRule = {
+    {kmip::TagUniqueIdentifier, std::shared_ptr<KMIPAttributeRule>(new KMIPUniqueIdentifierRule)},
+    {kmip::TagName, std::shared_ptr<KMIPAttributeRule>(new KMIPNameRule)},
+    {kmip::TagObjectType, std::shared_ptr<KMIPAttributeRule>(new KMIPObjectTypeRule)},
+    {kmip::TagCryptographicAlgorithm, std::shared_ptr<KMIPAttributeRule>(new KMIPCryptographicAlgorithmRule)},
+    {kmip::TagCryptographicLength, std::shared_ptr<KMIPAttributeRule>(new KMIPCryptographicLengthRule)},
+    {kmip::TagCryptographicParameters, std::shared_ptr<KMIPAttributeRule>(new KMIPCryptographicParametersRule)},
+    {kmip::TagCryptographicDomainParameters, std::shared_ptr<KMIPAttributeRule>(new KMIPCryptographicDomainParametersRule)},
+    {kmip::TagCertificateType, std::shared_ptr<KMIPAttributeRule>(new KMIPCertificateTypeRule)},
+    {kmip::TagCertificateLength, std::shared_ptr<KMIPAttributeRule>(new KMIPCertificateLengthRule)},
+    {kmip::TagX509CertificateIdentifier, std::shared_ptr<KMIPAttributeRule>(new KMIPX509CertificateIdentifierRule)},
+    {kmip::TagX509CertificateSubject, std::shared_ptr<KMIPAttributeRule>(new KMIPX509CertificateSubjectRule)},
+    {kmip::TagX509CertificateIssuer, std::shared_ptr<KMIPAttributeRule>(new KMIPX509CertificateIssuerRule)},
+    {kmip::TagCertificateIdentifier, std::shared_ptr<KMIPAttributeRule>(new KMIPCertificateIdentifierRule)},
+    {kmip::TagCertificateSubject, std::shared_ptr<KMIPAttributeRule>(new KMIPCertificateSubjectRule)},
+    {kmip::TagCertificateIssuer, std::shared_ptr<KMIPAttributeRule>(new KMIPCertificateIssuerRule)},
+    {kmip::TagDigitalSignatureAlgorithm, std::shared_ptr<KMIPAttributeRule>(new KMIPDigitalSignatureAlgorithmRule)},
+    {kmip::TagDigest, std::shared_ptr<KMIPAttributeRule>(new KMIPDigestRule)},
+    {kmip::TagOperationPolicyName, std::shared_ptr<KMIPAttributeRule>(new KMIPOperationPolicyNameRule)},
+    {kmip::TagCryptographicUsageMask, std::shared_ptr<KMIPAttributeRule>(new KMIPCryptographicUsageMaskRule)},
+    {kmip::TagLeaseTime, std::shared_ptr<KMIPAttributeRule>(new KMIPLeaseTimeRule)},
+    {kmip::TagUsageLimits, std::shared_ptr<KMIPAttributeRule>(new KMIPUsageLimitsRule)},
+    {kmip::TagState, std::shared_ptr<KMIPAttributeRule>(new KMIPStateRule)},
+    {kmip::TagInitialDate, std::shared_ptr<KMIPAttributeRule>(new KMIPInitialDateRule)},
+    {kmip::TagActivationDate, std::shared_ptr<KMIPAttributeRule>(new KMIPActivationDateRule)},
+    {kmip::TagProcessStartDate, std::shared_ptr<KMIPAttributeRule>(new KMIPProcessStartDateRule)},
+    {kmip::TagProtectStopDate, std::shared_ptr<KMIPAttributeRule>(new KMIPProtectStopDateRule)},
+    {kmip::TagDeactivationDate, std::shared_ptr<KMIPAttributeRule>(new KMIPDeactivationDateRule)},
+    {kmip::TagDestroyDate, std::shared_ptr<KMIPAttributeRule>(new KMIPDestroyDateRule)},
+    {kmip::TagCompromiseOccurrenceDate, std::shared_ptr<KMIPAttributeRule>(new KMIPCompromiseOccurrenceDateRule)},
+    {kmip::TagCompromiseDate, std::shared_ptr<KMIPAttributeRule>(new KMIPCompromiseDateRule)},
+    {kmip::TagRevocationReason, std::shared_ptr<KMIPAttributeRule>(new KMIPRevocationReasonRule)},
+    {kmip::TagArchiveDate, std::shared_ptr<KMIPAttributeRule>(new KMIPArchiveDateRule)},
+    {kmip::TagObjectGroup, std::shared_ptr<KMIPAttributeRule>(new KMIPObjectGroupRule)},
+    {kmip::TagFresh, std::shared_ptr<KMIPAttributeRule>(new KMIPFreshRule)},
+    {kmip::TagLink, std::shared_ptr<KMIPAttributeRule>(new KMIPLinkRule)},
+    {kmip::TagApplicationSpecificInformation, std::shared_ptr<KMIPAttributeRule>(new KMIPApplicationSpecificInformationRule)},
+    {kmip::TagContactInformation, std::shared_ptr<KMIPAttributeRule>(new KMIPContactInformationRule)},
+    {kmip::TagLastChangeDate, std::shared_ptr<KMIPAttributeRule>(new KMIPLastChangeDateRule)},
+    {kmip::TagCustomAttribute, std::shared_ptr<KMIPAttributeRule>(new KMIPCustomAttributeRule)},
+    {kmip::TagAlternativeName, std::shared_ptr<KMIPAttributeRule>(new KMIPAlternativeNameRule)},
+    {kmip::TagKeyValuePresent, std::shared_ptr<KMIPAttributeRule>(new KMIPKeyValuePresentRule)},
+    {kmip::TagKeyValueLocation, std::shared_ptr<KMIPAttributeRule>(new KMIPKeyValueLocationRule)},
+    {kmip::TagOriginalCreationDate, std::shared_ptr<KMIPAttributeRule>(new KMIPOriginalCreationDateRule)},
+    {kmip::TagRandomNumberGenerator, std::shared_ptr<KMIPAttributeRule>(new KMIPRandomNumberGeneratorRule)},
+    {kmip::TagPKCS_12FriendlyName, std::shared_ptr<KMIPAttributeRule>(new KMIPPKCS_12FriendlyNameRule)},
+    {kmip::TagDescription, std::shared_ptr<KMIPAttributeRule>(new KMIPDescriptionRule)},
+    {kmip::TagComment, std::shared_ptr<KMIPAttributeRule>(new KMIPCommentRule)},
+    {kmip::TagSensitive, std::shared_ptr<KMIPAttributeRule>(new KMIPSensitiveRule)},
+    {kmip::TagAlwaysSensitive, std::shared_ptr<KMIPAttributeRule>(new KMIPAlwaysSensitiveRule)},
+    {kmip::TagExtractable, std::shared_ptr<KMIPAttributeRule>(new KMIPExtractableRule)},
+    {kmip::TagNeverExtractable, std::shared_ptr<KMIPAttributeRule>(new KMIPNeverExtractableRule)}
 };

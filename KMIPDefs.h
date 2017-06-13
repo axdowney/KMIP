@@ -15,6 +15,9 @@ namespace kmip {
     const int kiDateTimeSize = 8;
     const int kiIntervalSize = 4;
 
+    const int kiNumOperations = 0x2B;
+    const int kiNumObjects = 9;
+
 
     enum KMIPType {
         TypeUnknown     = 0,
