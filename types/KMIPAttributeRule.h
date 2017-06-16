@@ -118,10 +118,15 @@ class KMIPAttributeRule {
         bool canServerSet() const;
         bool canClientSet() const;
         bool canServerModify() const;
+        bool canClientModify() const;
         bool canClientDelete() const;
         bool isMultiInstance() const;
         bool isSetByOperation(int iOp) const;
         bool appliesToObject(int iObj) const;
+
+        bool isAttributeAddable(int iIndex, int iObjectType, int iOperation, bool bServer);
+        bool isAttributeModifiable(int iIndex, int iObjectType, int iOperation, bool bServer);
+        bool isAttributeDeletable(int iIndex, int iObjectType, int iOperation, bool bServer);
 
         static constexpr int getCryptoSet();
         static constexpr int getCompleteSet();

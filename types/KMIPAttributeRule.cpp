@@ -23,6 +23,10 @@ bool KMIPAttributeRule::canServerModify() const {
     return getTFRule(RuleServerModify);
 }
 
+bool KMIPAttributeRule::canClientModify() const {
+    return getTFRule(RuleClientModify);
+}
+
 bool KMIPAttributeRule::canClientDelete() const {
     return getTFRule(RuleClientDelete);
 }
@@ -39,6 +43,26 @@ bool KMIPAttributeRule::appliesToObject(int iObj) const {
     return (iObj >= 0 && iObj < bsObjs.size()) ? bsObjs[iObj] : false;
 }
 
+bool KMIPAttributeRule::isAttributeAddable(int iIndex, int iObjectType, int iOperation, bool bServer) {
+    return (iIndex == 0 || iIndex > 0 && isMultiInstance())
+        && (appliesToObject(iObjectType))
+        && (isSetByOperation(iOperation) || iOperation == KMIPOperation::AddAttribute)
+        && (bServer ? canServerSet() : canClientSet());
+}
+
+bool KMIPAttributeRule::isAttributeModifiable(int iIndex, int iObjectType, int iOperation, bool bServer) {
+    return (iIndex == 0 || iIndex > 0 && isMultiInstance())
+        && (appliesToObject(iObjectType))
+        && (isSetByOperation(iOperation) || iOperation == KMIPOperation::ModifyAttribute)
+        && (bServer ? canServerModify() : canClientModify());
+}
+
+bool KMIPAttributeRule::isAttributeDeletable(int iIndex, int iObjectType, int iOperation, bool bServer) {
+    return (iIndex == 0 || iIndex > 0 && isMultiInstance())
+        && (appliesToObject(iObjectType))
+        && (isSetByOperation(iOperation) || iOperation == KMIPOperation::DeleteAttribute)
+        && (bServer || canClientDelete());
+}
 
 constexpr int KMIPAttributeRule::getCryptoSet() {
     return ObjCrypto;

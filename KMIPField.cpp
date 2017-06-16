@@ -81,7 +81,12 @@ KMIPFieldUP KMIPField::cloneUnique() const {
 }
 
 KMIPField *KMIPField::clone() const {
-    return KMIPUtils::createField(getTag(), getType()).release();
+    KMIPField *pkf = KMIPUtils::createField(getTrueTag(), getType()).release();
+    if (pkf) {
+        pkf->forceAttributeValue(isAttributeValueForced());
+    }
+
+    return pkf;
 }
 
 bool KMIPField::setValueFromTTLV(const std::string &sValue) {

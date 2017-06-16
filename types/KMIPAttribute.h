@@ -3,9 +3,11 @@
 #define _KMIPATTRIBUTE_H
 
 #include <string>
+#include <map>
 
 #include "KMIPStruct.h"
 
+class KMIPAttributeRule;
 class KMIPAttribute : public KMIPStruct {
     public:
         KMIPAttribute();
@@ -21,6 +23,14 @@ class KMIPAttribute : public KMIPStruct {
         KMIPFieldSPK getValue() const;
         bool setValue(KMIPFieldSP spkfValue);
 
+        static int getNameTag(const std::string &sName);
+        int getNameTag() const;
+        static std::string getNameFromTag(int iTag);
+        static std::shared_ptr<KMIPAttributeRule> getRuleFromName(const std::string &sName);
+        std::shared_ptr<KMIPAttributeRule> getRuleFromName() const;
+
+
+        static const std::map<std::string, int> mapNameToTag;
 };
 
 

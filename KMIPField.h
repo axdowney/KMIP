@@ -4,6 +4,8 @@
 #include <string>
 #include <memory>
 
+#include "PointerUtils.h"
+
 typedef int64_t kmipsize_t;
 class KMIPField;
 
@@ -36,6 +38,11 @@ class KMIPField {
         virtual KMIPFieldSP cloneShared() const;
         virtual KMIPFieldUP cloneUnique() const;
 
+        template <typename t>
+        std::shared_ptr<t> cloneShared() const;
+        template <typename t>
+        std::unique_ptr<t> cloneUnique() const;
+
         virtual bool setValueFromTTLV(const std::string &sValue);
         virtual std::string getTTLVValue() const;
 
@@ -50,5 +57,18 @@ class KMIPField {
         std::string sField;
         bool bAttributeValue;
 };
+
+template <typename t>
+std::shared_ptr<t> KMIPField::cloneShared() const {
+    return std::dynamic_pointer_cast<t>(cloneShared());
+}
+
+template <typename t>
+std::unique_ptr<t> KMIPField::cloneUnique() const {
+    std::unique_ptr<t> upt;
+    KMIPFieldUP upkf = cloneUnique();
+    dynamic_pointer_move(upt, upkf);
+    return upt;
+}
 
 #endif
