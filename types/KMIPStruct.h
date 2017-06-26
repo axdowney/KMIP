@@ -18,6 +18,7 @@ class KMIPStruct : public KMIPField {
         bool addOrderedField(const std::shared_ptr<KMIPField> &spkf, bool bReplace = true);
         bool removeField(int iTag);
         bool removeField(int iTag, int iIndex);
+        bool removeFieldBack(int iTag, int iIndex);
         std::list<std::shared_ptr<KMIPField> > getFields() const;
 
         bool setOrderedInteger(int iTag, int iVal, int iIndex = 0, bool bCreate = true);
@@ -30,6 +31,47 @@ class KMIPStruct : public KMIPField {
         bool setOrderedDateTime(int iTag, const DateTime &dtVal, int iIndex = 0, bool bCreate = true);
         bool setOrderedInterval(int iTag, uint32_t uiVal, int iIndex = 0, bool bCreate = true);
 
+
+#define DECLARE_GET_SET_FIELD_VALUE(vtype, name) \
+        vtype get##name() const;\
+        bool set##name(const vtype &val);
+#define IMPLEMENT_GET_SET_FIELD_VALUE(kstruct,ktype, vtype, name, tag) \
+        vtype kstruct::get##name() const {\
+            return getChildValue<KMIP##ktype>(tag, vtype());\
+        }\
+        bool kstruct::set##name(const vtype &val) {\
+            setOrdered##ktype(tag, val);\
+        }
+
+#define DECLARE_GET_SET_FIELD(vtype, name) \
+        std::shared_ptr<vtype> get##name();\
+        std::shared_ptr<const vtype> get##name() const;\
+        bool set##name(const std::shared_ptr<vtype> &val);
+#define IMPLEMENT_GET_SET_FIELD(kstruct, vtype, name, tag) \
+        std::shared_ptr<vtype> kstruct::get##name() {\
+            return getChild<vtype>(tag);\
+        }\
+        std::shared_ptr<const vtype> kstruct::get##name() const {\
+            return getChild<vtype>(tag);\
+        }\
+        bool kstruct::set##name(const std::shared_ptr<vtype> &val) {\
+            addOrderedField(val);\
+        }
+
+#define DECLARE_GET_ADD_FIELDS(vtype, name) \
+        std::shared_ptr<vtype> get##name##s();\
+        std::shared_ptr<const vtype> get##name##s() const;\
+        bool add##name(const std::shared_ptr<vtype> &val);
+#define IMPLEMENT_GET_ADD_FIELDS(kstruct, vtype, name, tag) \
+        std::shared_ptr<vtype> kstruct::get##name##s() {\
+            return getChild<vtype>(tag);\
+        }\
+        std::shared_ptr<const vtype> kstruct::get##name##s() const {\
+            return getChild<vtype>(tag);\
+        }\
+        bool kstruct::add##name(const std::shared_ptr<vtype> &val) {\
+            addOrderedField(val);\
+        }
 
         virtual kmipsize_t calculateLength() const;
         virtual kmipsize_t setCalculatedLength();
@@ -48,6 +90,9 @@ class KMIPStruct : public KMIPField {
         
         template<typename t>
         std::list<std::shared_ptr<t> > getChildren(int iTag = kmip::TagUnknown, int iType = kmip::TypeUnknown);
+
+        template<typename t>
+        std::list<std::shared_ptr<const t> > getChildren(int iTag = kmip::TagUnknown, int iType = kmip::TypeUnknown) const;
 
         template<typename t, typename v>
         v getChildValue(int iTag, const v &val, int iIndex = 0) const;
@@ -115,6 +160,22 @@ std::list<std::shared_ptr<t> > KMIPStruct::getChildren(int iTag, int iType) {
     for (auto spkf : listFields) {
         if (spkf && (iTag == kmip::TagUnknown || spkf->getTag() == iTag) && (iType == kmip::TypeUnknown || spkf->getType() == iType)) {
             spkfRet = std::dynamic_pointer_cast<t>(spkf);
+            if (spkfRet) {
+                listRet.push_back(spkfRet);
+            }
+        }
+    }
+
+    return listRet;
+}
+
+template<typename t>
+std::list<std::shared_ptr<const t> > KMIPStruct::getChildren(int iTag, int iType) const {
+    std::shared_ptr<t> spkfRet;
+    std::list<std::shared_ptr<t> > listRet;
+    for (auto spkf : listFields) {
+        if (spkf && (iTag == kmip::TagUnknown || spkf->getTag() == iTag) && (iType == kmip::TypeUnknown || spkf->getType() == iType)) {
+            spkfRet = std::dynamic_pointer_cast<const t>(spkf);
             if (spkfRet) {
                 listRet.push_back(spkfRet);
             }

@@ -1,11 +1,10 @@
 #include "KMIPFieldOrderItem.h"
 #include "KMIPDefs.h"
 
-KMIPFieldOrderItem::KMIPFieldOrderItem(int iTag, int iType, int iMin, int iMax) : vecItems(4,0) {
-    vecItems[ItemTag] = iTag;
-    vecItems[ItemType] = iType;
-    vecItems[ItemMin] = iMin;
-    vecItems[ItemMax] = iMax;
+KMIPFieldOrderItem::KMIPFieldOrderItem(int iTag, int iType, int iMin, int iMax) : vecItems({iTag, iType, iMin, iMax}) {
+}
+
+KMIPFieldOrderItem::KMIPFieldOrderItem(int iTag, const std::set<int> &setTypes, int iMin, int iMax) : vecItems({iTag, kmip::TypeMulti, iMin, iMax}), setTypes(setTypes) {
 }
 
 int KMIPFieldOrderItem::getItem(KMIPFieldOrderItem::Item eItem) const {
@@ -38,5 +37,6 @@ bool KMIPFieldOrderItem::tagMatches(int iTag) const {
 }
 
 bool KMIPFieldOrderItem::typeMatches(int iType) const {
-    return getType() == iType || getType() == kmip::TypeUnknown;
+    return getType() == iType || getType() == kmip::TypeUnknown
+        || getType() == kmip::TypeMulti && setTypes.find(iType) != setTypes.end();
 }

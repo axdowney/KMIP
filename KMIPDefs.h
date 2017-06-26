@@ -1,6 +1,8 @@
 #ifndef _KMIPDEFS_H
 #define _KMIPDEFS_H
 
+#include <limits>
+
 namespace kmip {
 
 
@@ -17,6 +19,7 @@ namespace kmip {
 
     const int kiNumOperations = 0x2B;
     const int kiNumObjects = 9;
+    const int kiMaxFields = std::numeric_limits<int>::max();
 
 
     enum KMIPType {
@@ -30,7 +33,9 @@ namespace kmip {
         TypeTextString,
         TypeByteString,
         TypeDateTime,
-        TypeInterval
+        TypeInterval,
+        /* Not a real type but a value to denote the object could be one of sevaral types */
+        TypeMulti,
     };
 
     enum KMIPTag {

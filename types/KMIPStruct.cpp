@@ -79,10 +79,38 @@ bool KMIPStruct::removeField(int iTag, int iIndex) {
     int iCount = 0;
     if (bOK) {
         auto iter = listFields.begin();
+        bOK = false;
         while (iter != listFields.end()) {
             if ((*iter)->getTag() == iTag) {
                 if (iCount == iIndex) {
                     listFields.erase(iter++);
+                    bOK = true;
+                    break;
+                } else {
+                    ++iter;
+                    ++iCount;
+                }
+            } else {
+                ++iter;
+            }
+        }
+    }
+
+    return bOK;
+}
+
+bool KMIPStruct::removeFieldBack(int iTag, int iIndex) {
+    bool bOK = iIndex >= 0;
+    int iCount = 0;
+    if (bOK) {
+        auto iter = listFields.rbegin();
+        bOK = false;
+        while (iter != listFields.rend()) {
+            if ((*iter)->getTag() == iTag) {
+                if (iCount == iIndex) {
+                    ++iter;
+                    listFields.erase(iter.base());
+                    bOK = true;
                     break;
                 } else {
                     ++iter;
