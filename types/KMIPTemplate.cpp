@@ -4,7 +4,7 @@
 #include "KMIPEnumeration.h"
 
 
-KMIPTemplate::KMIPTemplate() : KMIPStruct(kmip::TagTemplate) {}
+KMIPTemplate::KMIPTemplate() : KMIPManagedObject(kmip::TagTemplate) {}
 int KMIPTemplate::getObjectType() const {
     return KMIPObjectType::Template;
 }

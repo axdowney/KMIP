@@ -5,6 +5,9 @@
 
 namespace kmip {
 
+    /* Current Version */
+    const int kiVersionMajor = 1;
+    const int kiVersionMinor = 4;
 
     const int kiTagSize = 3;
     const int kiTypeSize = 1;

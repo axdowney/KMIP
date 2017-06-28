@@ -41,4 +41,6 @@ class KMIPManagedObject : public KMIPStruct {
 
 };
 
+typedef std::unique_ptr<KMIPManagedObject> KMIPManagedObjectUP;
+typedef std::shared_ptr<KMIPManagedObject> KMIPManagedObjectSP;
 #endif

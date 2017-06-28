@@ -198,6 +198,62 @@ KMIPFieldOrders::KMIPFieldOrders() {
             KMIPFieldOrderItem(kmip::TagOpaqueDataType, kmip::TypeEnumeration, 1),
             KMIPFieldOrderItem(kmip::TagOpaqueDataValue, kmip::TypeByteString, 1),
         }}}},
+        {kmip::TagProtocolVersion, {{0, {
+            KMIPFieldOrderItem(kmip::TagProtocolVersionMajor, kmip::TypeInteger, 1),
+            KMIPFieldOrderItem(kmip::TagProtocolVersionMinor, kmip::TypeInteger, 1),
+        }}}},
+        {kmip::TagAuthentication, {{0, {
+            KMIPFieldOrderItem(kmip::TagCredential, kmip::TypeStructure, 1, kmip::kiMaxFields),
+        }}}},
+        {kmip::TagMessageExtension, {{0, {
+            KMIPFieldOrderItem(kmip::TagVendorIdentification, kmip::TypeTextString, 1),
+            KMIPFieldOrderItem(kmip::TagCriticalityIndicator, kmip::TypeBoolean, 1),
+            KMIPFieldOrderItem(kmip::TagVendorExtension, kmip::TypeStructure, 1),
+        }}}},
+        {kmip::TagRequestMessage, {{0, {
+            KMIPFieldOrderItem(kmip::TagRequestHeader, kmip::TypeStructure, 1),
+            KMIPFieldOrderItem(kmip::TagBatchItem, kmip::TypeStructure, 1),
+        }}}},
+        {kmip::TagResponseMessage, {{0, {
+            KMIPFieldOrderItem(kmip::TagResponseHeader, kmip::TypeStructure, 1),
+            KMIPFieldOrderItem(kmip::TagBatchItem, kmip::TypeStructure, 1),
+        }}}},
+        {kmip::TagRequestHeader, {{0, {
+            KMIPFieldOrderItem(kmip::TagProtocolVersion, kmip::TypeStructure, 1),
+            KMIPFieldOrderItem(kmip::TagMaximumResponseSize, kmip::TypeInteger, 1),
+            KMIPFieldOrderItem(kmip::TagClientCorrelationValue, kmip::TypeTextString),
+            KMIPFieldOrderItem(kmip::TagServerCorrelationValue, kmip::TypeTextString),
+            KMIPFieldOrderItem(kmip::TagAsynchronousIndicator, kmip::TypeBoolean),
+            KMIPFieldOrderItem(kmip::TagAttestationCapableIndicator, kmip::TypeBoolean),
+            KMIPFieldOrderItem(kmip::TagAttestationType, kmip::TypeEnumeration, 0, kmip::kiMaxFields),
+            KMIPFieldOrderItem(kmip::TagAuthentication, kmip::TypeStructure),
+            KMIPFieldOrderItem(kmip::TagBatchErrorContinuationOption, kmip::TypeEnumeration),
+            KMIPFieldOrderItem(kmip::TagBatchOrderOption, kmip::TypeBoolean),
+            KMIPFieldOrderItem(kmip::TagTimeStamp, kmip::TypeDateTime),
+            KMIPFieldOrderItem(kmip::TagBatchCount, kmip::TypeInteger, 1),
+        }}}},
+        {kmip::TagResponseHeader, {{0, {
+            KMIPFieldOrderItem(kmip::TagProtocolVersion, kmip::TypeStructure, 1),
+            KMIPFieldOrderItem(kmip::TagTimeStamp, kmip::TypeDateTime, 1),
+            KMIPFieldOrderItem(kmip::TagNonce, kmip::TypeStructure),
+            KMIPFieldOrderItem(kmip::TagAttestationType, kmip::TypeEnumeration, 0, kmip::kiMaxFields),
+            KMIPFieldOrderItem(kmip::TagClientCorrelationValue, kmip::TypeTextString),
+            KMIPFieldOrderItem(kmip::TagServerCorrelationValue, kmip::TypeTextString),
+            KMIPFieldOrderItem(kmip::TagBatchCount, kmip::TypeInteger, 1),
+        }}}},
+        {kmip::TagBatchItem, {
+            {0, {
+                KMIPFieldOrderItem(kmip::TagOperation, kmip::TypeEnumeration),
+                KMIPFieldOrderItem(kmip::TagUniqueBatchItemID, kmip::TypeByteString),
+                KMIPFieldOrderItem(kmip::TagResultStatus, kmip::TypeEnumeration),
+                KMIPFieldOrderItem(kmip::TagResultReason, kmip::TypeEnumeration),
+                KMIPFieldOrderItem(kmip::TagResultMessage, kmip::TypeTextString),
+                KMIPFieldOrderItem(kmip::TagAsynchronousCorrelationValue, kmip::TypeByteString),
+                KMIPFieldOrderItem(kmip::TagResponsePayload, kmip::TypeStructure),
+                KMIPFieldOrderItem(kmip::TagRequestPayload, kmip::TypeStructure),
+                KMIPFieldOrderItem(kmip::TagMessageExtension, kmip::TypeStructure),
+            },
+      }}},
     };
 }
 

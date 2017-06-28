@@ -1,9 +1,10 @@
 /* Copyright (C) 2017 Alexander Downey */
 #include "KMIPProtocolVersion.h"
 #include "KMIPNumber.h"
+#include "KMIPDefs.h"
 
 
-KMIPProtocolVersion::KMIPProtocolVersion() : KMIPStruct(kmip::TagProtocolVersion) {}
+KMIPProtocolVersion::KMIPProtocolVersion() : KMIPProtocolVersion(kmip::kiVersionMajor, kmip::kiVersionMinor) {}//KMIPStruct(kmip::TagProtocolVersion) {}
 KMIPProtocolVersion::KMIPProtocolVersion(int iMajor, int iMinor) : KMIPStruct(kmip::TagProtocolVersion) {
     setProtocolVersionMinor(iMajor);
     setProtocolVersionMinor(iMinor);

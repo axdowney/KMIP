@@ -7,6 +7,7 @@
 
 class KMIPProtocolVersion;
 class KMIPAuthentication;
+class KMIPNonce;
 class KMIPHeader : public KMIPStruct {
     public:
         DECLARE_GET_SET_FIELD(KMIPProtocolVersion, ProtocolVersion);
@@ -21,8 +22,19 @@ class KMIPHeader : public KMIPStruct {
         DECLARE_GET_SET_FIELD_VALUE(bool, BatchOrderOption);
         DECLARE_GET_SET_FIELD_VALUE(DateTime, TimeStamp);
         DECLARE_GET_SET_FIELD_VALUE(int, BatchCount);
+        DECLARE_GET_SET_FIELD(KMIPNonce, Nonce);
     protected:
         KMIPHeader(int iTag);
+};
+
+class KMIPRequestHeader : public KMIPHeader {
+    public:
+        KMIPRequestHeader();
+};
+
+class KMIPResponseHeader : public KMIPHeader {
+    public:
+        KMIPResponseHeader();
 };
 
 #endif

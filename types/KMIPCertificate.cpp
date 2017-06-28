@@ -4,7 +4,7 @@
 #include "KMIPString.h"
 #include "KMIPEnumeration.h"
 
-KMIPCertificate::KMIPCertificate() : KMIPStruct(kmip::TagCertificate) {}
+KMIPCertificate::KMIPCertificate() : KMIPManagedObject(kmip::TagCertificate) {}
 int KMIPCertificate::getObjectType() const {
     return KMIPObjectType::Certificate;
 }

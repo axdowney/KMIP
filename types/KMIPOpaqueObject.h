@@ -2,9 +2,9 @@
 #ifndef _KMIPOPAQUEOBJECT_H
 #define _KMIPOPAQUEOBJECT_H
 
-#include "KMIPStruct.h"
+#include "KMIPManagedObject.h"
 
-class KMIPOpaqueObject : public KMIPStruct {
+class KMIPOpaqueObject : public KMIPManagedObject {
     public:
         KMIPOpaqueObject();
         KMIPOpaqueObject(uint32_t eType, const std::string &sValue);

@@ -2,35 +2,35 @@
 #ifndef _KMIPKEY_H
 #define _KMIPKEY_H
 
-#include "KMIPStruct.h"
+#include "KMIPManagedObject.h"
 
 class KMIPKeyBlock;
-class KMIPKey : public KMIPStruct {
+class KMIPKey : public KMIPManagedObject {
     public:
         DECLARE_GET_SET_FIELD(KMIPKeyBlock, KeyBlock);
     protected:
         KMIPKey(int iTag);
 };
 
-class KMIPSymmetricKey : KMIPKey {
+class KMIPSymmetricKey : public KMIPKey {
     public:
         KMIPSymmetricKey();
         virtual int getObjectType() const;
 };
 
-class KMIPPublicKey : KMIPKey {
+class KMIPPublicKey : public KMIPKey {
     public:
         KMIPPublicKey();
         virtual int getObjectType() const;
 };
 
-class KMIPPrivateKey : KMIPKey {
+class KMIPPrivateKey : public KMIPKey {
     public:
         KMIPPrivateKey();
         virtual int getObjectType() const;
 };
 
-class KMIPSplitKey : KMIPKey {
+class KMIPSplitKey : public KMIPKey {
     public:
         KMIPSplitKey();
         virtual int getObjectType() const;
@@ -42,14 +42,14 @@ class KMIPSplitKey : KMIPKey {
 
 };
 
-class KMIPSecretData : KMIPKey {
+class KMIPSecretData : public KMIPKey {
     public:
         KMIPSecretData();
         virtual int getObjectType() const;
         DECLARE_GET_SET_FIELD_VALUE(uint32_t, SecretDataType);
 };
 
-class KMIPPGPKey : KMIPKey {
+class KMIPPGPKey : public KMIPKey {
     public:
         KMIPPGPKey();
         virtual int getObjectType() const;

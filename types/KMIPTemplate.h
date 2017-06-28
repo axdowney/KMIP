@@ -2,10 +2,10 @@
 #ifndef _KMIPTEMPLATE_H
 #define _KMIPTEMPLATE_H
 
-#include "KMIPStruct.h"
+#include "KMIPManagedObject.h"
 
 class KMIPAttribute;
-class KMIPTemplate : public KMIPStruct {
+class KMIPTemplate : public KMIPManagedObject {
     public:
         KMIPTemplate();
         virtual int getObjectType() const;

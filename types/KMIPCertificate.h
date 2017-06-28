@@ -2,9 +2,9 @@
 #ifndef _KMIPCERTIFICATE_H
 #define _KMIPCERTIFICATE_H
 
-#include "KMIPStruct.h"
+#include "KMIPManagedObject.h"
 
-class KMIPCertificate : public KMIPStruct {
+class KMIPCertificate : public KMIPManagedObject {
     public:
         KMIPCertificate();
         virtual int getObjectType() const;

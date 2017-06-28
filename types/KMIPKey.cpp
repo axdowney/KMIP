@@ -6,7 +6,7 @@
 
 
         IMPLEMENT_GET_SET_FIELD(KMIPKey, KMIPKeyBlock, KeyBlock, kmip::TagKeyBlock);
-KMIPKey::KMIPKey(int iTag) : KMIPStruct(iTag) {}
+KMIPKey::KMIPKey(int iTag) : KMIPManagedObject(iTag) {}
 KMIPSymmetricKey::KMIPSymmetricKey() : KMIPKey(kmip::TagSymmetricKey) {}
 int KMIPSymmetricKey::getObjectType() const {
     return KMIPObjectType::SymmetricKey;

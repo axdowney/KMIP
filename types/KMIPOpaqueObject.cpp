@@ -4,8 +4,8 @@
 #include "KMIPString.h"
 #include "KMIPEnumeration.h"
 
-KMIPOpaqueObject::KMIPOpaqueObject() : KMIPStruct(kmip::TagOpaqueObject) {}
-KMIPOpaqueObject::KMIPOpaqueObject(uint32_t eType, const std::string &sValue) : KMIPStruct(kmip::TagOpaqueObject) {
+KMIPOpaqueObject::KMIPOpaqueObject() : KMIPManagedObject(kmip::TagOpaqueObject) {}
+KMIPOpaqueObject::KMIPOpaqueObject(uint32_t eType, const std::string &sValue) : KMIPManagedObject(kmip::TagOpaqueObject) {
     setOpaqueDataType(eType);
     setOpaqueDataValue(sValue);
 }
