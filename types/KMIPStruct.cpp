@@ -320,6 +320,10 @@ bool KMIPStruct::setOrderedInterval(int iTag, uint32_t uiVal, int iIndex, bool b
     return bOK;
 }
 
+bool KMIPStruct::setValueFromTTLV(const std::string &sValue) {
+    return KMIPTTLVEncoding().decodeKMIPStruct(this, sValue);
+}
+
 std::string KMIPStruct::getTTLVValue() const {
     std::string sRet;
     std::string sValue;

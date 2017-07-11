@@ -22,6 +22,7 @@ class KMIPUtils {
         static bool isTagKnown(int iTag);
         static std::string TagToString(int iTag);
         static std::string TypeToString(int iType);
+        static int getTagType(int iTag);
         static unsigned int getTotalLength(unsigned int iLength);
         static std::string printFieldString(const KMIPField *pkf, int iDepth);
 

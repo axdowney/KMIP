@@ -3,6 +3,7 @@
 #include "KMIPEnumeration.h"
 #include "KMIPAttribute.h"
 #include "KMIPAttributeRule.h"
+#include "KMIPString.h"
 
 
 KMIPManagedObject::KMIPManagedObject(int iTag) : KMIPStruct(iTag) {
@@ -17,12 +18,17 @@ std::map<std::string, std::map<int, std::shared_ptr<KMIPAttribute> > > KMIPManag
 }
 
 std::shared_ptr<KMIPAttribute> KMIPManagedObject::getAttribute(const std::string &sName, int iIndex) const {
+    std::shared_ptr<KMIPAttribute> spka = getAttributePrivate(sName, iIndex);
+    return spka ? spka->cloneShared<KMIPAttribute>() : spka;
+}
+
+std::shared_ptr<KMIPAttribute> KMIPManagedObject::getAttributePrivate(const std::string &sName, int iIndex) const {
     std::shared_ptr<KMIPAttribute> spka;
     auto nameIter = mapNameToMapIndexToAttribute.find(sName);
     if (nameIter != mapNameToMapIndexToAttribute.end()) {
         auto indexIter = nameIter->second.find(iIndex);
         if (indexIter != nameIter->second.end()) {
-            spka = indexIter->second->cloneShared<KMIPAttribute>();
+            spka = indexIter->second;
         }
     }
 
@@ -44,7 +50,7 @@ bool KMIPManagedObject::addAttribute(KMIPAttribute *pka) {
     if (bRet) {
         std::shared_ptr<KMIPAttribute> spka = pka->cloneShared<KMIPAttribute>();
         if (spka) {
-            mapNameToMapIndexToAttribute[pka->getName()][pka->getIndex()] = pka->cloneShared<KMIPAttribute>();
+            mapNameToMapIndexToAttribute[pka->getName()][pka->getIndex()] = spka;
         } else {
             bRet = false;
         }
@@ -53,16 +59,17 @@ bool KMIPManagedObject::addAttribute(KMIPAttribute *pka) {
     return bRet;
 }
 
-bool KMIPManagedObject::modifyAttribute(const std::string &sName, int iIndex, KMIPFieldSP spkfValue) {
+bool KMIPManagedObject::modifyAttribute(const std::string &sName, int iIndex, KMIPFieldSP spkfValue, bool bAdd) {
     bool bRet = static_cast<bool>(spkfValue);
     if (bRet) {
-        std::shared_ptr<KMIPAttribute> spka;
-        auto nameIter = mapNameToMapIndexToAttribute.find(sName);
-        if (nameIter != mapNameToMapIndexToAttribute.end()) {
-            auto indexIter = nameIter->second.find(iIndex);
-            if (indexIter != nameIter->second.end()) {
-                bRet = indexIter->second->setValue(spkfValue);
-            }
+        std::shared_ptr<KMIPAttribute> spka = getAttributePrivate(sName, iIndex);
+        if (spka) {
+            bRet = spka->setValue(spkfValue);
+        } else if (bAdd) {
+            spka.reset(new KMIPAttribute(sName, iIndex, spkfValue));
+            mapNameToMapIndexToAttribute[sName][iIndex] = spka;
+        } else {
+            bRet = false;
         }
     }
 
@@ -140,4 +147,8 @@ bool KMIPManagedObject::isAttributeModifiable(KMIPAttribute *pka, int iOperation
         
 bool KMIPManagedObject::isAttributeDeletable(KMIPAttribute *pka, int iOperation, bool bServer) const {
     return pka && isAttributeDeletable(pka->getName(), pka->getIndex(), iOperation, bServer);
+}
+
+std::string KMIPManagedObject::getUniqueID() const {
+    return getAttributeValue<KMIPTextString>(KMIPAttribute::getNameFromTag(kmip::TagUniqueIdentifier),0,std::string());
 }

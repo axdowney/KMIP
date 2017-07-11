@@ -7,7 +7,7 @@ CC := gcc -g
 CPPFLAGS := -std=c++11
 CFLAGS :=
 INC := -I/home/alexander/KMIP/ -I/home/alexander/KMIP/types -I/home/alexander/common
-LIBS := -lgtest -lgtest_main -lpthread
+LIBS := -lgtest -lgtest_main -lpthread -lpqxx -lpq
 
 SRCDIR := .
 OBJDIR := obj

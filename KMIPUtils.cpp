@@ -510,3 +510,14 @@ const std::map<int, std::shared_ptr<KMIPAttributeRule> > KMIPUtils::mapTagToRule
     {kmip::TagExtractable, std::shared_ptr<KMIPAttributeRule>(new KMIPExtractableRule)},
     {kmip::TagNeverExtractable, std::shared_ptr<KMIPAttributeRule>(new KMIPNeverExtractableRule)}
 };
+
+
+int KMIPUtils::getTagType(int iTag) {
+    int iType = kmip::TypeUnknown;
+    switch (iTag) {
+        default:
+            break;
+    }
+
+    return iType;
+}

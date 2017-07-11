@@ -21,6 +21,10 @@ class KMIPAttribute : public KMIPStruct {
         bool setIndex(int iNewIndex);
         KMIPFieldSP getValue();
         KMIPFieldSPK getValue() const;
+
+        template<typename T, typename V>
+        V getValue(const V &val) const;
+
         bool setValue(KMIPFieldSP spkfValue);
 
         static int getNameTag(const std::string &sName);
@@ -32,6 +36,12 @@ class KMIPAttribute : public KMIPStruct {
 
         static const std::map<std::string, int> mapNameToTag;
 };
+
+
+template<typename T, typename V>
+V KMIPAttribute::getValue(const V &val) const {
+    return getChildValue<T>(kmip::TagAttributeValue, val);
+}
 
 
 

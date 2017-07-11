@@ -106,6 +106,7 @@ class KMIPStruct : public KMIPField {
         template<typename t, typename v>
         bool addOrderedChild(int iTag, int iType, const v &val);
 
+        virtual bool setValueFromTTLV(const std::string &sValue);
         virtual std::string getTTLVValue() const;
     protected:
         std::list<std::shared_ptr<KMIPField> > listFields;

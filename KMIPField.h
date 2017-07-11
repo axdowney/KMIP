@@ -29,6 +29,7 @@ class KMIPField {
         virtual kmipsize_t calculateLength() const;
         virtual kmipsize_t setCalculatedLength();
         virtual std::string getValueString() const;
+        virtual bool setValueFromString(const std::string &sValue);
 
         int getTrueTag() const;
         bool isAttributeValueForced() const;
