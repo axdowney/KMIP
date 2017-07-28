@@ -21,6 +21,7 @@ typedef std::weak_ptr<const KMIPField>   KMIPFieldWPK;
 class KMIPField {
     public:
         KMIPField(int iTag, int iType);
+        virtual ~KMIPField();
         int getTag() const;
         int getType() const;
         int getLength() const;
@@ -35,6 +36,9 @@ class KMIPField {
         bool isAttributeValueForced() const;
         bool forceAttributeValue(bool bForce = true);
 
+        template<typename t>
+        bool hasEqualValue(const KMIPField &kfRight) const;
+        virtual bool operator==(const KMIPField &kfRight) const;
         virtual bool isValid() const;
         virtual KMIPFieldSP cloneShared() const;
         virtual KMIPFieldUP cloneUnique() const;
@@ -46,10 +50,18 @@ class KMIPField {
 
         virtual bool setValueFromTTLV(const std::string &sValue);
         virtual std::string getTTLVValue() const;
+        virtual std::string getTTLVValueTrim() const;
 
         static const kmipsize_t kiInvalidLength = -1;
+
     protected:
         virtual KMIPField *clone() const;
+
+        template <typename t>
+        t *clone1() const;
+
+        template <typename t, typename v>
+        t *clone2() const;
 
     private:
         int iTag;
@@ -58,6 +70,38 @@ class KMIPField {
         std::string sField;
         bool bAttributeValue;
 };
+
+
+template<typename t>
+bool KMIPField::hasEqualValue(const KMIPField &kfRight) const {
+    const t *pkfRight = dynamic_cast<const t*>(&kfRight);
+    const t *pkfLeft = dynamic_cast<const t*>(this);
+    return pkfLeft != nullptr && pkfRight != nullptr
+        && pkfLeft->getValue() == pkfRight->getValue();
+}
+
+
+template <typename t>
+t *KMIPField::clone1() const {
+    KMIPField *pkf = clone();
+    t *tRet = dynamic_cast<t *>(pkf);
+    if (!tRet) {
+        delete pkf;
+    }
+
+    return tRet;
+}
+
+template <typename t, typename v>
+t *KMIPField::clone2() const {
+    KMIPField *pkf = v::clone();
+    t *tRet = dynamic_cast<t *>(pkf);
+    if (!tRet) {
+        delete pkf;
+    }
+
+    return tRet;
+}
 
 template <typename t>
 std::shared_ptr<t> KMIPField::cloneShared() const {

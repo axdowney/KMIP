@@ -13,9 +13,13 @@ class KMIPDateTime : public KMIPField {
 
         virtual bool setValueFromTTLV(const std::string &sValue);
         virtual std::string getTTLVValue() const;
+        virtual std::string getTTLVValueTrim() const;
 
+        virtual bool operator==(const KMIPField &kfRight) const;
+        bool operator==(const KMIPDateTime &kfLeft) const;
 
     protected:
+        virtual KMIPField *clone() const;
         DateTime dtValue;
 };
 

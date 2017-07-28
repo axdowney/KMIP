@@ -16,6 +16,33 @@ bool KMIPStruct::addField(const std::shared_ptr<KMIPField> &spkf) {
     return true;
 }
 
+bool KMIPStruct::addFields(const std::list<std::shared_ptr<KMIPField> > &listFields) {
+    this->listFields.insert(this->listFields.end(), listFields.begin(), listFields.end());
+    return true;
+}
+
+bool KMIPStruct::copyFields(const std::list<std::shared_ptr<KMIPField> > &listFields) {
+    for (auto spkf : listFields) {
+        if (spkf) {
+            KMIPFieldSP spkfCopy = spkf->cloneShared();
+            if (spkfCopy) {
+                this->listFields.push_back(spkfCopy);
+            }
+        }
+    }
+
+    return true;
+}
+
+KMIPField *KMIPStruct::clone() const {
+    KMIPStruct *pkst = clone2<KMIPStruct, KMIPField>();
+    if (pkst) {
+        pkst->copyFields(this->listFields);
+    }
+
+    return pkst;
+}
+
 bool KMIPStruct::addOrderedField(const std::shared_ptr<KMIPField> &spkf, bool bReplace) {
     bool bOK = static_cast<bool>(spkf);
     if (hasOrder()) {
@@ -125,6 +152,10 @@ bool KMIPStruct::removeFieldBack(int iTag, int iIndex) {
     return bOK;
 }
 
+void KMIPStruct::clear() {
+    listFields.clear();
+}
+
 std::list<std::shared_ptr<KMIPField> > KMIPStruct::getFields() const {
     return listFields;
 }
@@ -212,6 +243,28 @@ bool KMIPStruct::isValid() const {
     }
 
     return bOK && (!hasOrder() || isOrdered());
+}
+
+bool KMIPStruct::operator==(const KMIPField &kfRight) const {
+    const KMIPStruct *pkst = dynamic_cast<const KMIPStruct *>(&kfRight);
+    return pkst && operator==(*pkst);
+}
+
+bool KMIPStruct::operator==(const KMIPStruct &kfRight) const {
+    bool bRet = this->KMIPField::operator==(kfRight) && listFields.size() == kfRight.listFields.size();
+    if (bRet) {
+        auto listLeft = listFields.begin();
+        auto listRight = kfRight.listFields.begin();
+        for (; listLeft != listFields.end() && bRet; ++listRight, ++listLeft) {
+            if (!(*listRight) || !(*listLeft)) {
+                bRet = false;
+            } else {
+                bRet = *(*listRight) == *(*listLeft);
+            }
+        }
+    }
+
+    return bRet;
 }
 
 size_t KMIPStruct::getFieldNumber(int iTag, int iType) const {

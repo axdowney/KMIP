@@ -241,8 +241,7 @@ KMIPFieldOrders::KMIPFieldOrders() {
             KMIPFieldOrderItem(kmip::TagServerCorrelationValue, kmip::TypeTextString),
             KMIPFieldOrderItem(kmip::TagBatchCount, kmip::TypeInteger, 1),
         }}}},
-        {kmip::TagBatchItem, {
-            {0, {
+        {kmip::TagBatchItem, {{0, {
                 KMIPFieldOrderItem(kmip::TagOperation, kmip::TypeEnumeration),
                 KMIPFieldOrderItem(kmip::TagUniqueBatchItemID, kmip::TypeByteString),
                 KMIPFieldOrderItem(kmip::TagResultStatus, kmip::TypeEnumeration),
@@ -252,8 +251,11 @@ KMIPFieldOrders::KMIPFieldOrders() {
                 KMIPFieldOrderItem(kmip::TagResponsePayload, kmip::TypeStructure),
                 KMIPFieldOrderItem(kmip::TagRequestPayload, kmip::TypeStructure),
                 KMIPFieldOrderItem(kmip::TagMessageExtension, kmip::TypeStructure),
-            },
-      }}},
+        }}}},
+        {kmip::TagProtocolVersion, {{0, {
+                KMIPFieldOrderItem(kmip::TagProtocolVersionMajor, kmip::TypeInteger),
+                KMIPFieldOrderItem(kmip::TagProtocolVersionMinor, kmip::TypeInteger),
+        }}}},
     };
 }
 

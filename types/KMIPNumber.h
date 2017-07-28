@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <sstream>
+#include <iostream>
 #include "KMIPField.h"
 #include "KMIPDefs.h"
 #include "KMIPTTLVEncoding.h"
@@ -11,6 +12,10 @@
 template<class T>
 class KMIPNumber : public KMIPField {
     public:
+        ~KMIPNumber() {
+//            std::cerr << "Deleting a " << KMIPUtils::printFieldString(this);
+        }
+
         T getValue() const {
             return val;
         }
@@ -29,6 +34,11 @@ class KMIPNumber : public KMIPField {
             setValue(static_cast<T>(KMIPTTLVEncoding::binaryToInt(sValue)));
             return true;
         }
+        
+        virtual std::string getTTLVValueTrim() const {
+            kmipsize_t iBytes = calculateLength();
+            return KMIPTTLVEncoding::intToBinary(getValue(), iBytes);
+        }
 
         virtual std::string getTTLVValue() const {
             kmipsize_t iBytes = calculateLength();
@@ -36,9 +46,31 @@ class KMIPNumber : public KMIPField {
             return sRet + KMIPTTLVEncoding::getBuffer(KMIPUtils::getTotalLength(getType()) - iBytes);
         }
 
+        bool operator==(const KMIPNumber<T> &kfRight) const {
+            return this->KMIPField::operator==(kfRight)
+                && getValue() == kfRight.getValue();
+        }
+
+        virtual bool operator==(const KMIPField &kfRight) const {
+            const KMIPNumber<T> *kpkn = dynamic_cast<const KMIPNumber<T> *>(&kfRight);
+            return kpkn ? *this == *kpkn : false;
+        }
+
     protected:
         KMIPNumber(int iTag, int iType, T val) : KMIPField(iTag, iType) {
             this->val = val;
+        }
+        virtual KMIPField *clone() const {
+            KMIPField *pkf = KMIPField::clone();
+            KMIPNumber<T> *pkn = dynamic_cast<KMIPNumber<T> *>(pkf);
+            if (pkn) {
+                pkn->setValue(getValue());
+            } else if (pkf) {
+                delete pkf;
+                pkf = nullptr;
+            }
+
+            return pkf;
         }
         T val;
 };

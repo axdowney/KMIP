@@ -23,7 +23,7 @@ DBAttributeMap KMIPDatabaseRaw::getAttributes(const std::list<std::string> &list
                 sSet += ",";
             }
 
-            sSet += spconn->quote_name(sID);
+            sSet += spconn->quote(sID);
         }
 
         sQuery += sSet + ");";
@@ -64,7 +64,7 @@ DBObjectMap KMIPDatabaseRaw::getObjects(const std::list<std::string> &listIDs) {
                 sSet += ",";
             }
 
-            sSet += spconn->quote_name(sID);
+            sSet += spconn->quote(sID);
         }
 
         sQuery += sSet + ");";
@@ -103,7 +103,7 @@ int KMIPDatabaseRaw::deleteAttributes(const std::list<std::string> &listIDs) {
                 sSet += ",";
             }
 
-            sSet += spconn->quote_name(sID);
+            sSet += spconn->quote(sID);
         }
 
         sQuery += sSet + ");";
@@ -130,7 +130,7 @@ int KMIPDatabaseRaw::deleteObjects(const std::list<std::string> &listIDs) {
                 sSet += ",";
             }
 
-            sSet += spconn->quote_name(sID);
+            sSet += spconn->quote(sID);
         }
 
         sQuery += sSet + ");";
@@ -154,7 +154,7 @@ int KMIPDatabaseRaw::addObjects(const std::list<std::shared_ptr<KMIPManagedObjec
         std::string sQuery = "INSERT INTO managedobject VALUES ";
         for (auto spko : listObjects) {
             if (spko) {
-                sQuery += "(" + spko->getUniqueID() + "," + kttlve.encodeKMIP(spko.get()) + "),";
+                sQuery += "(" + spconn->quote(spko->getUniqueID()) + "," + spconn->quote(HexUtils::hexEncode(kttlve.encodeKMIP(spko.get()))) + "),";
             }
         }
 
@@ -171,28 +171,31 @@ int KMIPDatabaseRaw::addObjects(const std::list<std::shared_ptr<KMIPManagedObjec
             iRet = -1;
         }
 
-        sQuery = "INSERT INTO attributes VALUES ";
-        for (auto spko : listObjects) {
-            if (spko) {
-                std::string sID = spko->getUniqueID();
-                for (auto nameIter : spko->getAttributeMap()) {
-                    for (auto indexIter : nameIter.second) {
-                        KMIPFieldSP spkf = indexIter.second->getValue();
-                        std::string sValue = spkf ? HexUtils::hexEncode(spkf->getTTLVValue()) : std::string();
-                        std::string sType = spkf ? std::to_string(spkf->getType()) : std::to_string(kmip::TypeTextString);
-                        sQuery += "(" + sID + "," + indexIter.second->getName() + "," + std::to_string(indexIter.second->getIndex()) + "," + sValue + "," + sValue +  "),";
+        if (iRet > 0) {
+            sQuery = "INSERT INTO attributes VALUES ";
+            for (auto spko : listObjects) {
+                if (spko) {
+                    std::string sID = spconn->quote(spko->getUniqueID());
+                    for (auto nameIter : spko->getAttributeMap()) {
+                        for (auto indexIter : nameIter.second) {
+                            KMIPFieldSP spkf = indexIter.second->getValue();
+                            std::string sValue = spkf ? HexUtils::hexEncode(spkf->getTTLVValueTrim()) : std::string();
+                            sValue = spconn->quote(sValue);
+                            std::string sType = spkf ? std::to_string(spkf->getType()) : std::to_string(kmip::TypeTextString);
+                            sQuery += "(" + sID + "," + spconn->quote(indexIter.second->getName()) + "," + std::to_string(indexIter.second->getIndex()) + "," + sValue + "),";
+                        }
                     }
                 }
             }
-        }
 
-        if (sQuery.back() == ',') {
-            sQuery.back() = ';';
-        } else {
-            sQuery += ";";
-        }
+            if (sQuery.back() == ',') {
+                sQuery.back() = ';';
+            } else {
+                sQuery += ";";
+            }
 
-        runQuery(std::shared_ptr<SQLQuery>(new SQLQueryRaw(sQuery)));
+            runQuery(std::shared_ptr<SQLQuery>(new SQLQueryRaw(sQuery)));
+        }
     }
 
     return iRet;

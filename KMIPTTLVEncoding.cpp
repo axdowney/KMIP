@@ -44,7 +44,7 @@ bool KMIPTTLVEncoding::decodeKMIPStruct(KMIPStruct *pkst, const std::string &sFi
     bool bOK = pkst;
     if (bOK) {
         std::string sExtra(sFields);
-        do {
+        while (!sExtra.empty()) {
             KMIPFieldUP upkf = decodeKMIP(sExtra, sExtra);
             if (upkf) {
                 pkst->addField(KMIPFieldSP(upkf.release()));
@@ -52,7 +52,7 @@ bool KMIPTTLVEncoding::decodeKMIPStruct(KMIPStruct *pkst, const std::string &sFi
                 bOK = false;
                 break;
             }
-        } while (!sExtra.empty());
+        }
     }
 
     return bOK;

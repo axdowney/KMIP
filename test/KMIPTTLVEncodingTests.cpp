@@ -15,6 +15,7 @@ TEST(KMIPTTLVEncoding, test1) {
     KMIPTTLVEncoding kmipttlve;
     KMIPFieldUP upkf = kmipttlve.decodeKMIP(sMessage);
     std::string sLog = KMIPUtils::printFieldString(upkf.get(), 0);
+    std::cerr << sLog;
     EXPECT_TRUE(static_cast<bool>(upkf)) << sLog;
     std::string sField = kmipttlve.encodeKMIP(upkf.get());
     std::string sHexField = HexUtils::hexEncode(sField, false);

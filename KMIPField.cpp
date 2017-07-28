@@ -2,11 +2,16 @@
 #include "KMIPDefs.h"
 #include "KMIPUtils.h"
 
+#include <iostream>
+
 KMIPField::KMIPField(int iTag, int iType) {
     this->iTag = iTag;
     this->iType = iType;
     iLength = KMIPField::kiInvalidLength;
     bAttributeValue = false;
+}
+
+KMIPField::~KMIPField() {
 }
 
 int KMIPField::getTag() const {
@@ -67,6 +72,17 @@ std::string KMIPField::getValueString() const {
     return "";
 }
 
+bool KMIPField::setValueFromString(const std::string &sValue) {
+    return false;
+}
+
+bool KMIPField::operator==(const KMIPField &kfLeft) const {
+    return this->iTag == kfLeft.iTag
+        && this->iType == kfLeft.iType
+        && this->bAttributeValue == kfLeft.bAttributeValue
+        && this->calculateLength() == kfLeft.calculateLength();
+}
+
 bool KMIPField::isValid() const {
     return true;
 }
@@ -95,4 +111,8 @@ bool KMIPField::setValueFromTTLV(const std::string &sValue) {
 
 std::string KMIPField::getTTLVValue() const {
     return "";
+}
+
+std::string KMIPField::getTTLVValueTrim() const {
+    return getTTLVValue();
 }

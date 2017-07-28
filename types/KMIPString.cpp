@@ -24,6 +24,25 @@ bool KMIPString::setValueFromTTLV(const std::string &sValue) {
     return true;
 }
 
+bool KMIPString::operator==(const KMIPField &kfRight) const {
+    const KMIPString *pksRight = dynamic_cast<const KMIPString *>(&kfRight);
+    return pksRight && operator==(*pksRight);
+}
+
+bool KMIPString::operator==(const KMIPString &kfRight) const {
+    return this->KMIPField::operator==(kfRight)
+        && getValue() == getValue();
+}
+
+KMIPField *KMIPString::clone() const {
+    KMIPString *pks = clone2<KMIPString, KMIPField>();
+    if (pks) {
+        pks->setValue(getValue());
+    }
+
+    return pks;
+}
+
 KMIPTextString::KMIPTextString(int iTag, const std::string &sValue) : KMIPString(iTag, kmip::TypeTextString, sValue) {}
 
 kmipsize_t KMIPTextString::calculateLength() const {
@@ -40,6 +59,10 @@ std::string KMIPTextString::getTTLVValue() const {
     return getValue() + KMIPTTLVEncoding::getBuffer(KMIPUtils::getTotalLength(iBytes) - iBytes);
 }
 
+std::string KMIPTextString::getTTLVValueTrim() const {
+    return getValue(); 
+}
+
 KMIPByteString::KMIPByteString(int iTag, const std::string &sValue) : KMIPString(iTag, kmip::TypeByteString, sValue) {}
 
 kmipsize_t KMIPByteString::calculateLength() const {
@@ -49,6 +72,10 @@ kmipsize_t KMIPByteString::calculateLength() const {
 std::string KMIPByteString::getTTLVValue() const {
     kmipsize_t iBytes = calculateLength();
     return HexUtils::hexDecode(getValue()) + KMIPTTLVEncoding::getBuffer(KMIPUtils::getTotalLength(iBytes) - iBytes);
+}
+
+std::string KMIPByteString::getTTLVValueTrim() const {
+    return HexUtils::hexDecode(getValue()); 
 }
 
 KMIPBigInteger::KMIPBigInteger(int iTag, const std::string &sValue) : KMIPString(iTag, kmip::TypeBigInteger, sValue) {}
@@ -61,5 +88,9 @@ std::string KMIPBigInteger::getTTLVValue() const {
     kmipsize_t iBytes = calculateLength();
     std::string sRet = HexUtils::hexDecode(getValue()); 
     return KMIPTTLVEncoding::getBuffer(iBytes - sRet.size()) + sRet;
+}
+
+std::string KMIPBigInteger::getTTLVValueTrim() const {
+    return HexUtils::hexDecode(getValue()); 
 }
 

@@ -13,6 +13,9 @@ class KMIPString : public KMIPField {
         virtual bool setValueFromTTLV(const std::string &sValue);
     protected:
         KMIPString(int iTag, int iType, const std::string &sValue);
+        virtual bool operator==(const KMIPField &kfRight) const;
+        bool operator==(const KMIPString &kfRight) const;
+        virtual KMIPField *clone() const;
         std::string sValue;
 };
 
@@ -22,6 +25,7 @@ class KMIPTextString : public KMIPString {
         virtual kmipsize_t calculateLength() const;
         virtual bool setValueFromTTLV(const std::string &sValue);
         virtual std::string getTTLVValue() const;
+        virtual std::string getTTLVValueTrim() const;
 };
 
 class KMIPByteString : public KMIPString {
@@ -29,6 +33,7 @@ class KMIPByteString : public KMIPString {
         KMIPByteString(int iTag, const std::string &sValue = std::string());
         virtual kmipsize_t calculateLength() const;
         virtual std::string getTTLVValue() const;
+        virtual std::string getTTLVValueTrim() const;
 };
 
 class KMIPBigInteger : public KMIPString {
@@ -36,6 +41,7 @@ class KMIPBigInteger : public KMIPString {
         KMIPBigInteger(int iTag, const std::string &sValue = std::string());
         virtual kmipsize_t calculateLength() const;
         virtual std::string getTTLVValue() const;
+        virtual std::string getTTLVValueTrim() const;
 };
 
 #endif

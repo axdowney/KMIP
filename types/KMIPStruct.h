@@ -15,10 +15,13 @@ class KMIPStruct : public KMIPField {
     public:
         explicit KMIPStruct(int iTag);
         bool addField(const std::shared_ptr<KMIPField> &spkf);
+        bool addFields(const std::list<std::shared_ptr<KMIPField> > &listFields);
+        bool copyFields(const std::list<std::shared_ptr<KMIPField> > &listFields);
         bool addOrderedField(const std::shared_ptr<KMIPField> &spkf, bool bReplace = true);
         bool removeField(int iTag);
         bool removeField(int iTag, int iIndex);
         bool removeFieldBack(int iTag, int iIndex);
+        void clear();
         std::list<std::shared_ptr<KMIPField> > getFields() const;
 
         bool setOrderedInteger(int iTag, int iVal, int iIndex = 0, bool bCreate = true);
@@ -35,13 +38,16 @@ class KMIPStruct : public KMIPField {
 #define DECLARE_GET_SET_FIELD_VALUE(vtype, name) \
         vtype get##name() const;\
         bool set##name(const vtype &val);
-#define IMPLEMENT_GET_SET_FIELD_VALUE(kstruct,ktype, vtype, name, tag) \
+#define IMPLEMENT_GET_SET_FIELD_VALUE_DEFAULT(kstruct, ktype, vtype, name, tag, vdefault) \
         vtype kstruct::get##name() const {\
-            return getChildValue<KMIP##ktype>(tag, vtype());\
+            return getChildValue<KMIP##ktype>(tag, vdefault);\
         }\
         bool kstruct::set##name(const vtype &val) {\
             setOrdered##ktype(tag, val);\
         }
+#define IMPLEMENT_GET_SET_FIELD_VALUE(kstruct, ktype, vtype, name, tag) \
+        IMPLEMENT_GET_SET_FIELD_VALUE_DEFAULT(kstruct, ktype, vtype, name, tag, vtype())
+
 
 #define DECLARE_GET_SET_FIELD(vtype, name) \
         std::shared_ptr<vtype> get##name();\
@@ -79,6 +85,8 @@ class KMIPStruct : public KMIPField {
         bool hasOrder() const;
         bool isOrdered() const;
         virtual bool isValid() const;
+        virtual bool operator==(const KMIPField &kfRight) const;
+        bool operator==(const KMIPStruct &kfRight) const;
 
         size_t getFieldNumber(int iTag = kmip::TagUnknown, int iType = kmip::TypeUnknown) const;
         
@@ -108,7 +116,9 @@ class KMIPStruct : public KMIPField {
 
         virtual bool setValueFromTTLV(const std::string &sValue);
         virtual std::string getTTLVValue() const;
+
     protected:
+        virtual KMIPField *clone() const;
         std::list<std::shared_ptr<KMIPField> > listFields;
         KMIPFieldOrder *pkfo;
 };

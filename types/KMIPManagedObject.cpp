@@ -152,3 +152,7 @@ bool KMIPManagedObject::isAttributeDeletable(KMIPAttribute *pka, int iOperation,
 std::string KMIPManagedObject::getUniqueID() const {
     return getAttributeValue<KMIPTextString>(KMIPAttribute::getNameFromTag(kmip::TagUniqueIdentifier),0,std::string());
 }
+
+bool KMIPManagedObject::setUniqueID(const std::string &sID) {
+    return setAttributeValue<KMIPTextString>(KMIPAttribute::getNameFromTag(kmip::TagUniqueIdentifier), 0, sID);
+}

@@ -22,15 +22,20 @@ class KMIPUtils {
         static bool isTagKnown(int iTag);
         static std::string TagToString(int iTag);
         static std::string TypeToString(int iType);
+        static int TagFromString(const std::string &sTag);
+        static int TypeFromString(const std::string &sType);
         static int getTagType(int iTag);
         static unsigned int getTotalLength(unsigned int iLength);
-        static std::string printFieldString(const KMIPField *pkf, int iDepth);
+        static std::string printFieldString(const KMIPField *pkf, int iDepth = 0);
+	static std::string getTagName(int iTag);
+        static int getNameTag(const std::string &sName);
 
     protected:
         static const std::map<int, std::string> mapTagToString;
         static std::map<int, std::shared_ptr<KMIPFactory> > mapKMIPFactories;
         static std::shared_ptr<KMIPFieldOrders> spkfos;
         static const std::map<int, std::shared_ptr<KMIPAttributeRule> > mapTagToRule;
+        static const std::map<std::string, int> mapNameToTag;
 
 };
 

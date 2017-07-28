@@ -6,7 +6,7 @@
 
 KMIPProtocolVersion::KMIPProtocolVersion() : KMIPProtocolVersion(kmip::kiVersionMajor, kmip::kiVersionMinor) {}//KMIPStruct(kmip::TagProtocolVersion) {}
 KMIPProtocolVersion::KMIPProtocolVersion(int iMajor, int iMinor) : KMIPStruct(kmip::TagProtocolVersion) {
-    setProtocolVersionMinor(iMajor);
+    setProtocolVersionMajor(iMajor);
     setProtocolVersionMinor(iMinor);
 }
         IMPLEMENT_GET_SET_FIELD_VALUE(KMIPProtocolVersion, Integer, int, ProtocolVersionMajor, kmip::TagProtocolVersionMajor);

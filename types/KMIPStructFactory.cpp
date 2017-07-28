@@ -70,6 +70,7 @@ KMIPStructUP KMIPStructFactory::createStructure(int iTag) const {
             break;
         case kmip::TagProtocolVersion:
             upkst.reset(new KMIPProtocolVersion());
+            upkst->clear();
             break;
         case kmip::TagAuthentication:
             upkst.reset(new KMIPAuthentication());

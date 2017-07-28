@@ -7,8 +7,8 @@
 #include <memory>
 
 #include "KMIPStruct.h"
+#include "KMIPAttribute.h"
 
-class KMIPAttribute;
 class KMIPManagedObject : public KMIPStruct {
     public:
         virtual int getObjectType() const;
@@ -25,7 +25,7 @@ class KMIPManagedObject : public KMIPStruct {
         std::shared_ptr<T> getAttributeValueField(const std::string &sName, int iIndex);
 
         template<typename T,typename V>
-        bool setAttributeValue(const std::string &sName, int iIndex, V &val) const;
+        bool setAttributeValue(const std::string &sName, int iIndex, V &val);
 
         bool hasAttribute(const std::string &sName, int iIndex) const;
         bool hasAttribute(const std::string &sName) const;
@@ -88,20 +88,29 @@ std::shared_ptr<T> KMIPManagedObject::getAttributeValueField(const std::string &
     std::shared_ptr<T> spRet;
     std::shared_ptr<KMIPAttribute> spAttr = getAttributePrivate(sName, iIndex);
     if (spAttr) {
-        spRet = std::dynamic_pointer_cast<KMIPStruct>(spAttr)->getChildValue<T>(kmip::TagAttributeValue);
+        spRet = spAttr->getChild<T>(kmip::TagAttributeValue);
     }
 
     return spRet;
 }
 
 template<typename T,typename V>
-bool KMIPManagedObject::setAttributeValue(const std::string &sName, int iIndex, V &val) const {
+bool KMIPManagedObject::setAttributeValue(const std::string &sName, int iIndex, V &val) {
     std::shared_ptr<T> spkf = getAttributeValueField<T>(sName, iIndex);
+    bool bRet = static_cast<bool>(spkf);
     if (spkf) {
         spkf->setValue(val);
     } else {
-        spkf.reset(KMIPUtils::createField());
+        int iTag = KMIPAttribute::getNameTag(sName);
+        int iType = iTag == kmip::TagCustomAttribute ? kmip::TypeUnknown : KMIPUtils::getTagType(iTag);
+        if (iType != kmip::TypeUnknown) {
+            spkf.reset(dynamic_cast<T *>(KMIPUtils::createField(iTag, iType).release()));
+            spkf->setValue(val);
+            bRet = modifyAttribute(sName, iIndex, spkf, true);
+        }
     }
+
+    return bRet;
 }
 
 #endif
