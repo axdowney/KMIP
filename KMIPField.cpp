@@ -116,3 +116,11 @@ std::string KMIPField::getTTLVValue() const {
 std::string KMIPField::getTTLVValueTrim() const {
     return getTTLVValue();
 }
+
+bool KMIPField::setValueFromXML(const std::string &sValue) {
+    return "";
+}
+
+std::string KMIPField::getXMLValue() const {
+    return "";
+}

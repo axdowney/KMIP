@@ -11,6 +11,8 @@ class KMIPString : public KMIPField {
         virtual std::string getValueString() const;
         void setValue(const std::string &sValue);
         virtual bool setValueFromTTLV(const std::string &sValue);
+        virtual bool setValueFromXML(const std::string &sValue);
+        virtual std::string getXMLValue() const;
     protected:
         KMIPString(int iTag, int iType, const std::string &sValue);
         virtual bool operator==(const KMIPField &kfRight) const;

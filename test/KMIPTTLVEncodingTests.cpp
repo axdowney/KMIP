@@ -5,6 +5,7 @@
 #include "KMIPField.h"
 #include "KMIPUtils.h"
 #include "HexUtils.h"
+#include "KMIPTestDefs.h"
 
 TEST(KMIPTTLVEncoding, test1) {
     std::string sHexMessage = "42007801000000904200770100000048420069010000002042006a02000000040000000100000000"
@@ -21,4 +22,17 @@ TEST(KMIPTTLVEncoding, test1) {
     std::string sHexField = HexUtils::hexEncode(sField, false);
     EXPECT_EQ(sMessage, sField);
     EXPECT_EQ(sHexMessage, sHexField);
+}
+
+TEST(KMIPTTLVEncoding, test2) {
+    if (KMIPTestGlobals::argc > 1) {
+        std::string sHex = KMIPTestGlobals::argv[1];
+        std::string sMessage = HexUtils::hexDecode(sHex);
+        KMIPTTLVEncoding kmipttlve;
+        KMIPFieldUP upkf = kmipttlve.decodeKMIP(sMessage);
+
+        ASSERT_TRUE(upkf.get());
+        std::string sLog = KMIPUtils::printFieldString(upkf.get(), 0);
+        std::cerr << sLog;
+    }
 }

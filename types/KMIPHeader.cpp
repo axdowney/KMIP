@@ -8,6 +8,9 @@
 #include "KMIPString.h"
 
 
+bool KMIPHeader::setProtocolVersion(int iMajor, int iMinor) {
+    return setProtocolVersion(std::shared_ptr<KMIPProtocolVersion>(new KMIPProtocolVersion(iMajor, iMinor)));
+}
         IMPLEMENT_GET_SET_FIELD(KMIPHeader, KMIPProtocolVersion, ProtocolVersion, kmip::TagProtocolVersion);
         IMPLEMENT_GET_SET_FIELD_VALUE(KMIPHeader, Integer, int, MaximumResponseSize, kmip::TagMaximumResponseSize);
         IMPLEMENT_GET_SET_FIELD_VALUE(KMIPHeader, TextString, std::string, ClientCorrelationValue, kmip::TagClientCorrelationValue);

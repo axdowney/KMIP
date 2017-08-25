@@ -14,6 +14,13 @@ class KMIPBitMask : public KMIPInteger {
         int getFullMask() const;
         std::vector<int> splitFlags() const;
         virtual std::string getFlagName(int iFlag) const;
+        virtual int getFlagFromName(std::string sFlag) const;
+        virtual std::vector<std::string> getFlagNames(int iFlags, bool bHexInvalidBits = false) const;
+        virtual std::string getFlagsString(int iFlags, bool bHexInvalidBits = false) const;
+        virtual int getFlagsFromString(const std::string &sFlags, bool bAllowNumber = false) const;
+
+        virtual bool setValueFromXML(const std::string &sValue);
+        virtual std::string getXMLValue() const;
 
     protected:
         int iFullMask;
@@ -45,8 +52,9 @@ class KMIPCryptographicUsageMask : public KMIPBitMask {
         b(FullMask,             0xFFFFF)
 
 	DECLARE_ENUM_LIST(VALUE, CRYPTOGRAPHIC_USAGE_MASK_LIST)
-	KMIPCryptographicUsageMask(int iVal);
+	KMIPCryptographicUsageMask(int iVal = None);
         virtual std::string getFlagName(int iFlag) const;
+        virtual int getFlagFromName(std::string sFlag) const;
 };
 
 class KMIPStorageStatusMask : public KMIPBitMask {
@@ -57,8 +65,9 @@ class KMIPStorageStatusMask : public KMIPBitMask {
         b(FullMask,             0x3)
 
 	DECLARE_ENUM_LIST(VALUE, STORAGE_STATUS_MASK_LIST)
-	KMIPStorageStatusMask(int iVal);
+	KMIPStorageStatusMask(int iVal = None);
         virtual std::string getFlagName(int iFlag) const;
+        virtual int getFlagFromName(std::string sFlag) const;
 };
 
 

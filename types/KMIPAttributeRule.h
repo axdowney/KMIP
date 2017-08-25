@@ -10,7 +10,7 @@
 class KMIPAttributeRule {
     public:
         enum Rule {
-            RuleUnknown = 0,
+            RuleUnknown = -1,
             RuleShallHaveValue,
             RuleServerSet,
             RuleClientSet,
@@ -22,13 +22,13 @@ class KMIPAttributeRule {
         };
 
         enum RuleFlag {
-            TFShallHaveValue = 1 << (RuleShallHaveValue - 1),
-            TFServerSet = 1 << (RuleServerSet - 1),
-            TFClientSet = 1 << (RuleClientSet - 1),
-            TFServerModify = 1 << (RuleServerModify - 1),
-            TFClientModify = 1 << (RuleClientModify - 1),
-            TFClientDelete = 1 << (RuleClientDelete - 1),
-            TFMultiInstance = 1 << (RuleMultiInstance - 1),
+            TFShallHaveValue = 1 << (RuleShallHaveValue),
+            TFServerSet = 1 << (RuleServerSet),
+            TFClientSet = 1 << (RuleClientSet),
+            TFServerModify = 1 << (RuleServerModify),
+            TFClientModify = 1 << (RuleClientModify),
+            TFClientDelete = 1 << (RuleClientDelete),
+            TFMultiInstance = 1 << (RuleMultiInstance),
 
             TFServerAll = TFServerSet | TFServerModify,
             TFClientAll = TFClientSet | TFClientModify | TFClientDelete,
@@ -134,7 +134,7 @@ class KMIPAttributeRule {
         static constexpr int getCertSet();
 
     protected:
-        std::bitset<RuleMultiInstance> bsTFRules;
+        std::bitset<RuleEnd> bsTFRules;
         std::bitset<kmip::kiNumOperations> bsOps;
         std::bitset<kmip::kiNumObjects> bsObjs;
 };

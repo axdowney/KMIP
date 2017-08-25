@@ -8,6 +8,7 @@ class KMIPMessageExtension;
 class KMIPBatchItem : public KMIPStruct {
     public:
         KMIPBatchItem();
+        bool copyFields(std::shared_ptr<KMIPBatchItem> spkbi);
         DECLARE_GET_SET_FIELD_VALUE(uint32_t, Operation);
         DECLARE_GET_SET_FIELD_VALUE(std::string, UniqueBatchItemID);
         DECLARE_GET_SET_FIELD_VALUE(uint32_t, ResultStatus);

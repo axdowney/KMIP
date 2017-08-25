@@ -8,8 +8,11 @@ CXX := g++ -g
 CC := gcc -g
 CPPFLAGS := -std=c++11
 CFLAGS :=
-INC := -I/home/alexander/KMIP/ -I/home/alexander/KMIP/types -I/home/alexander/common -I./handlers -I./handlers/operations
-LIBS := -lgtest -lgtest_main -lpthread -lpqxx -lpq
+#include ./boost.mk
+INC := -I$(HOME)/KMIP/ -I$(HOME)/KMIP/types -I$(HOME)/common -I$(HOME)/KMIP/handlers -I$(HOME)/KMIP/handlers/operations -I/usr/include/partow/
+
+
+LIBS := -lgtest -lgtest_main -lpthread -lpqxx -lpq -lcryptopp -lpugixml /usr/local/lib/libadios.so -lmpi
 
 SRCDIR := .
 OBJDIR := obj

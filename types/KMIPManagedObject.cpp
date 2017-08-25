@@ -46,11 +46,19 @@ bool KMIPManagedObject::hasAttribute(const std::string &sName) const {
 }
 
 bool KMIPManagedObject::addAttribute(KMIPAttribute *pka) {
-    bool bRet = pka && !hasAttribute(pka->getName(), pka->getIndex());
+    std::string sName = pka ? pka->getName() : std::string();
+    bool bRet = !sName.empty();
     if (bRet) {
-        std::shared_ptr<KMIPAttribute> spka = pka->cloneShared<KMIPAttribute>();
+        std::shared_ptr<KMIPAttribute> spka;
+        if (pka->getFieldNumber(kmip::TagAttributeIndex) == 0) {
+            spka = pka->cloneShared<KMIPAttribute>();
+            spka->setIndex(getNextIndex(sName));
+        } else if (!hasAttribute(sName, pka->getIndex())) {
+            spka = pka->cloneShared<KMIPAttribute>();
+        }
+
         if (spka) {
-            mapNameToMapIndexToAttribute[pka->getName()][pka->getIndex()] = spka;
+            mapNameToMapIndexToAttribute[sName][pka->getIndex()] = spka;
         } else {
             bRet = false;
         }
@@ -109,17 +117,17 @@ int KMIPManagedObject::getNextIndex(const std::string &sName) const {
 /* In general */
 bool KMIPManagedObject::isAttributeAddable(int iObjectType, const std::string &sName, int iIndex, int iOperation, bool bServer) {
     std::shared_ptr<KMIPAttributeRule> spkar = KMIPUtils::getAttributeRule(KMIPAttribute::getNameTag(sName));
-    return spkar && spkar->isAttributeAddable(iObjectType, iObjectType, iOperation, bServer);
+    return spkar && spkar->isAttributeAddable(iIndex, iObjectType, iOperation, bServer);
 }
 
 bool KMIPManagedObject::isAttributeModifiable(int iObjectType, const std::string &sName, int iIndex, int iOperation, bool bServer) {
     std::shared_ptr<KMIPAttributeRule> spkar = KMIPUtils::getAttributeRule(KMIPAttribute::getNameTag(sName));
-    return spkar && spkar->isAttributeModifiable(iObjectType, iObjectType, iOperation, bServer);
+    return spkar && spkar->isAttributeModifiable(iIndex, iObjectType, iOperation, bServer);
 }
 
 bool KMIPManagedObject::isAttributeDeletable(int iObjectType, const std::string &sName, int iIndex, int iOperation, bool bServer) {
     std::shared_ptr<KMIPAttributeRule> spkar = KMIPUtils::getAttributeRule(KMIPAttribute::getNameTag(sName));
-    return spkar && spkar->isAttributeDeletable(iObjectType, iObjectType, iOperation, bServer);
+    return spkar && spkar->isAttributeDeletable(iIndex, iObjectType, iOperation, bServer);
 }
 
 /* In particular */

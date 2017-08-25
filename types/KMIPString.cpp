@@ -24,6 +24,15 @@ bool KMIPString::setValueFromTTLV(const std::string &sValue) {
     return true;
 }
 
+bool KMIPString::setValueFromXML(const std::string &sValue) {
+    setValue(sValue);
+    return true;
+}
+
+std::string KMIPString::getXMLValue() const {
+    return getValue();
+}
+
 bool KMIPString::operator==(const KMIPField &kfRight) const {
     const KMIPString *pksRight = dynamic_cast<const KMIPString *>(&kfRight);
     return pksRight && operator==(*pksRight);

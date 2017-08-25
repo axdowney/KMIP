@@ -10,6 +10,7 @@ class KMIPAuthentication;
 class KMIPNonce;
 class KMIPHeader : public KMIPStruct {
     public:
+        bool setProtocolVersion(int iMajor, int iMinor);
         DECLARE_GET_SET_FIELD(KMIPProtocolVersion, ProtocolVersion);
         DECLARE_GET_SET_FIELD_VALUE(int, MaximumResponseSize);
         DECLARE_GET_SET_FIELD_VALUE(std::string, ClientCorrelationValue);

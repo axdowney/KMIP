@@ -5,8 +5,33 @@ KMIPEnumeration::KMIPEnumeration(int iTag, uint32_t eValue, uint32_t eFirst, uin
     this->eLast = eLast;
 }
 
+bool KMIPEnumeration::isValid(uint32_t uiVal) const {
+    return eFirst <= uiVal && uiVal <= eLast;
+}
+
 bool KMIPEnumeration::isValid() const {
-    return eFirst <= val && val <= eLast;
+    return KMIPNumber::isValid() && isValid(getValue());
+}
+
+std::string KMIPEnumeration::getValueName() const {
+    return "";
+}
+
+bool KMIPEnumeration::setValueFromName(const std::string &sName) {
+    return false;
+}
+
+bool KMIPEnumeration::setValueFromXML(const std::string &sValue) {
+    return setValueFromName(sValue) || KMIPNumber::setValueFromXML(sValue);
+}
+
+std::string KMIPEnumeration::getXMLValue() const {
+    std::string sRet = getValueName();
+    if (sRet.empty()) {
+        sRet = KMIPNumber::getXMLValue();
+    }
+
+    return sRet;
 }
 
 KMIPCredentialType::KMIPCredentialType(uint32_t eValue) : KMIPEnumeration(kmip::TagCredentialType, eValue, KMIPCredentialType::UsernameAndPassword, KMIPCredentialType::Attestation) {}
@@ -51,6 +76,14 @@ IMPLEMENT_ENUM_TO_STRING(KMIPObjectType, VALUE, Unknown, "", OBJECT_TYPE_LIST);
 
 KMIPCryptographicAlgorithm::KMIPCryptographicAlgorithm(uint32_t eValue) : KMIPEnumeration(kmip::TagCryptographicAlgorithm, eValue, KMIPCryptographicAlgorithm::Unknown, KMIPCryptographicAlgorithm::NumValues) {}
 IMPLEMENT_ENUM_TO_STRING(KMIPCryptographicAlgorithm, VALUE, Unknown, "", CRYPTOGRAPHIC_ALGORITHM_LIST);
+
+bool KMIPCryptographicAlgorithm::isFixedLength(uint32_t iAlg) {
+    return getCryptoPPAlg(iAlg, MIN_KEYLENGTH) == getCryptoPPAlg(iAlg, MAX_KEYLENGTH);
+}
+
+bool KMIPCryptographicAlgorithm::isSymmetric(uint32_t iAlg) {
+    return getCryptoPPAlg(iAlg, MAX_KEYLENGTH) > 0;
+}
 
 KMIPBlockCipherMode::KMIPBlockCipherMode(uint32_t eValue) : KMIPEnumeration(kmip::TagBlockCipherMode, eValue, KMIPBlockCipherMode::Unknown, KMIPBlockCipherMode::NumValues) {}
 IMPLEMENT_ENUM_TO_STRING(KMIPBlockCipherMode, VALUE, Unknown, "", BLOCK_CIPHER_MODE_LIST);

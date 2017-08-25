@@ -7,10 +7,13 @@
 #include "KMIPEnumeration.h"
 #include "KMIPDatabase.h"
 #include "KMIPStruct.h"
+#include "KMIPBatchItem.h"
+#include "KMIPMessageStatus.h"
+#include "KMIPMessageHandler.h"
 
 class KMIPOperationHandler : protected KMIPOperation {
     public:
-        virtual KMIPStructSP handleRequest(std::shared_ptr<KMIPDatabase> spkd, KMIPStructSP &spksRequest) const=0;
+        virtual bool handleRequest(std::shared_ptr<KMIPDatabase> spkd, KMIPMessageStatus &kms, std::shared_ptr<KMIPBatchItem> spkbi) const=0;
 
     protected:
         KMIPOperationHandler(int32_t eOperation) : KMIPOperation(eOperation) {}

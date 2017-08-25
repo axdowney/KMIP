@@ -17,7 +17,7 @@ std::shared_ptr<const KMIPHeader> KMIPMessage::getHeader() const {
         getChild<KMIPHeader>(kmip::TagResponseHeader);
 }
 
-IMPLEMENT_GET_SET_FIELD(KMIPMessage, KMIPBatchItem, BatchItem, kmip::TagBatchItem);
+IMPLEMENT_GET_ADD_FIELDS(KMIPMessage, KMIPBatchItem, BatchItem, kmip::TagBatchItem);
 
 KMIPMessage::KMIPMessage(int iTag) : KMIPStruct(iTag) {}
 KMIPRequestMessage::KMIPRequestMessage() : KMIPMessage(kmip::TagRequestMessage) {}

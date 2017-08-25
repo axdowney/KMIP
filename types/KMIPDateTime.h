@@ -15,6 +15,9 @@ class KMIPDateTime : public KMIPField {
         virtual std::string getTTLVValue() const;
         virtual std::string getTTLVValueTrim() const;
 
+        virtual bool setValueFromXML(const std::string &sValue);
+        virtual std::string getXMLValue() const;
+
         virtual bool operator==(const KMIPField &kfRight) const;
         bool operator==(const KMIPDateTime &kfLeft) const;
 

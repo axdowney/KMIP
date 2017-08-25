@@ -46,6 +46,23 @@ class KMIPNumber : public KMIPField {
             return sRet + KMIPTTLVEncoding::getBuffer(KMIPUtils::getTotalLength(getType()) - iBytes);
         }
 
+        virtual bool setValueFromXML(const std::string &sValue) {
+            bool bRet = true;
+            try {
+                this->val = static_cast<T>(std::stoll(sValue, nullptr, 0));
+            } catch (std::invalid_argument e) {
+                bRet = false;
+            }
+
+            return bRet;
+        }
+
+        virtual std::string getXMLValue() const {
+            std::stringstream ss;
+            ss << val;
+            return ss.str();
+        }
+
         bool operator==(const KMIPNumber<T> &kfRight) const {
             return this->KMIPField::operator==(kfRight)
                 && getValue() == kfRight.getValue();
@@ -89,6 +106,21 @@ class KMIPLongInteger : public KMIPNumber<long int> {
 class KMIPBoolean : public KMIPNumber<bool> {
     public:
         KMIPBoolean(int iTag, bool val = bool()) : KMIPNumber(iTag, kmip::TypeBoolean, val) {}
+        virtual bool setValueFromXML(const std::string &sValue) {
+            if (!KMIPNumber::setValueFromXML(sValue)) {
+                std::string sVal = sValue;
+                for (char &c : sVal) {
+                    c = std::toupper(c);
+                }
+                val = sVal == "TRUE";
+            }
+            return true;
+        }
+
+        virtual std::string getXMLValue() const {
+            return val ? "true" : "false";
+        }
+
 };
 
 class KMIPInterval : public KMIPNumber<uint32_t> {

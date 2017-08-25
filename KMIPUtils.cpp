@@ -9,6 +9,7 @@
 #include "KMIPStructFactory.h"
 #include "KMIPFieldOrders.h"
 #include "KMIPAttributeRule.h"
+#include "KMIPBitMask.h"
 
 std::map<int, std::shared_ptr<KMIPFactory> > KMIPUtils::mapKMIPFactories = {
     {kmip::TypeStructure, std::shared_ptr<KMIPFactory>(new KMIPStructFactory())},
@@ -19,39 +20,51 @@ std::shared_ptr<KMIPFieldOrders> KMIPUtils::spkfos(new KMIPFieldOrders);
 
 KMIPFieldUP KMIPUtils::createField(int iTag, int iType) {
     KMIPFieldUP upkf;
-    switch (iType) {
-	case kmip::TypeStructure:
-	    upkf = mapKMIPFactories[iType]->createField(iTag);
-	    break;
-	case kmip::TypeInteger:
-	    upkf.reset(new KMIPInteger(iTag));
-	    break;
-	case kmip::TypeLongInteger:
-	    upkf.reset(new KMIPLongInteger(iTag));
-	    break;
-	case kmip::TypeBigInteger:
-	    upkf.reset(new KMIPBigInteger(iTag));
-	    break;
-	case kmip::TypeEnumeration:
-	    upkf = mapKMIPFactories[iType]->createField(iTag);
-	    break;
-	case kmip::TypeBoolean:
-	    upkf.reset(new KMIPBoolean(iTag));
-	    break;
-	case kmip::TypeTextString:
-	    upkf.reset(new KMIPTextString(iTag));
-	    break;
-	case kmip::TypeByteString:
-	    upkf.reset(new KMIPByteString(iTag));
-	    break;
-	case kmip::TypeDateTime:
-	    upkf.reset(new KMIPDateTime(iTag));
-	    break;
-	case kmip::TypeInterval:
-	    upkf.reset(new KMIPInterval(iTag));
-	    break;
-	default:
-	    break;
+    switch (iTag) {
+        case kmip::TagCryptographicUsageMask:
+            upkf.reset(new KMIPCryptographicUsageMask());
+            break;
+        case kmip::TagStorageStatusMask:
+            upkf.reset(new KMIPStorageStatusMask());
+            break;
+        default:
+            break;
+    }
+    if (!upkf) {
+        switch (iType) {
+            case kmip::TypeStructure:
+                upkf = mapKMIPFactories[iType]->createField(iTag);
+                break;
+            case kmip::TypeInteger:
+                upkf.reset(new KMIPInteger(iTag));
+                break;
+            case kmip::TypeLongInteger:
+                upkf.reset(new KMIPLongInteger(iTag));
+                break;
+            case kmip::TypeBigInteger:
+                upkf.reset(new KMIPBigInteger(iTag));
+                break;
+            case kmip::TypeEnumeration:
+                upkf = mapKMIPFactories[iType]->createField(iTag);
+                break;
+            case kmip::TypeBoolean:
+                upkf.reset(new KMIPBoolean(iTag));
+                break;
+            case kmip::TypeTextString:
+                upkf.reset(new KMIPTextString(iTag));
+                break;
+            case kmip::TypeByteString:
+                upkf.reset(new KMIPByteString(iTag));
+                break;
+            case kmip::TypeDateTime:
+                upkf.reset(new KMIPDateTime(iTag));
+                break;
+            case kmip::TypeInterval:
+                upkf.reset(new KMIPInterval(iTag));
+                break;
+            default:
+                break;
+        }
     }
 
     return upkf;
@@ -134,8 +147,6 @@ int KMIPUtils::TagFromString(const std::string &sTag) {
         if (sTag == tuple.second) {
             iTag = tuple.first;
             break;
-        } else if (sTag < tuple.second) {
-            break;
         }
     }
 
@@ -190,6 +201,13 @@ std::string KMIPUtils::printFieldString(const KMIPField *pkf, int iDepth) {
 		    sRet += printFieldString(iter->get(), iDepth + 1);
 		}
 	    }
+        } else if (pkf->getType() == kmip::TypeEnumeration) {
+            const KMIPEnumeration *pke = dynamic_cast<const KMIPEnumeration *>(pkf);
+            if (pke) {
+                sRet += "|" + KMIPUtils::TagToString(pkf->getTag()) + "|"
+                    + KMIPUtils::TypeToString(pkf->getType()) + "|"
+                    + pkf->getValueString() + "(" + pke->getValueName() + ")|\n";
+            }
 	} else {
 	    sRet += "|" + KMIPUtils::TagToString(pkf->getTag()) + "|"
 		+ KMIPUtils::TypeToString(pkf->getType()) + "|"

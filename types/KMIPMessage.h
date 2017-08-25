@@ -13,7 +13,7 @@ class KMIPMessage : public KMIPStruct {
         bool isRequest() const;
         std::shared_ptr<KMIPHeader> getHeader();
         std::shared_ptr<const KMIPHeader> getHeader() const;
-        DECLARE_GET_SET_FIELD(KMIPBatchItem, BatchItem);
+        DECLARE_GET_ADD_FIELDS(KMIPBatchItem, BatchItem);
     protected:
         KMIPMessage(int iTag);
 };

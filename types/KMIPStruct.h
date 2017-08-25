@@ -65,15 +65,23 @@ class KMIPStruct : public KMIPField {
         }
 
 #define DECLARE_GET_ADD_FIELDS(vtype, name) \
-        std::shared_ptr<vtype> get##name##s();\
-        std::shared_ptr<const vtype> get##name##s() const;\
+        std::shared_ptr<vtype> get##name();\
+        std::shared_ptr<const vtype> get##name() const;\
+        std::list<std::shared_ptr<vtype> > get##name##s();\
+        std::list<std::shared_ptr<const vtype> > get##name##s() const;\
         bool add##name(const std::shared_ptr<vtype> &val);
 #define IMPLEMENT_GET_ADD_FIELDS(kstruct, vtype, name, tag) \
-        std::shared_ptr<vtype> kstruct::get##name##s() {\
+        std::shared_ptr<vtype> kstruct::get##name() {\
             return getChild<vtype>(tag);\
         }\
-        std::shared_ptr<const vtype> kstruct::get##name##s() const {\
+        std::shared_ptr<const vtype> kstruct::get##name() const {\
             return getChild<vtype>(tag);\
+        }\
+        std::list<std::shared_ptr<vtype> > kstruct::get##name##s() {\
+            return getChildren<vtype>(tag);\
+        }\
+        std::list<std::shared_ptr<const vtype> > kstruct::get##name##s() const {\
+            return getChildren<vtype>(tag);\
         }\
         bool kstruct::add##name(const std::shared_ptr<vtype> &val) {\
             addOrderedField(val);\
@@ -182,8 +190,8 @@ std::list<std::shared_ptr<t> > KMIPStruct::getChildren(int iTag, int iType) {
 
 template<typename t>
 std::list<std::shared_ptr<const t> > KMIPStruct::getChildren(int iTag, int iType) const {
-    std::shared_ptr<t> spkfRet;
-    std::list<std::shared_ptr<t> > listRet;
+    std::shared_ptr<const t> spkfRet;
+    std::list<std::shared_ptr<const t> > listRet;
     for (auto spkf : listFields) {
         if (spkf && (iTag == kmip::TagUnknown || spkf->getTag() == iTag) && (iType == kmip::TypeUnknown || spkf->getType() == iType)) {
             spkfRet = std::dynamic_pointer_cast<const t>(spkf);
@@ -200,7 +208,7 @@ template<typename t, typename v>
 bool KMIPStruct::findChildValue(int iTag, v &val, int iIndex) const {
     std::shared_ptr<const t> spkfRet = getChild<t>(iTag, kmip::TypeUnknown, iIndex);
     if (spkfRet) {
-        val = spkfRet->getValue();
+        val = static_cast<v>(spkfRet->getValue());
     }
 
     return static_cast<bool>(spkfRet);

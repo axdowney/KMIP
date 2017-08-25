@@ -2,13 +2,47 @@
 #ifndef _KMIPENUMERATION_H
 #define _KMIPENUMERATION_H
 
+
+#include <crypto++/aes.h>
+#include <crypto++/secblock.h>
+#include <crypto++/osrng.h>
+#include <crypto++/des.h>
+#include <crypto++/blowfish.h>
+#include <crypto++/twofish.h>
+#include <crypto++/camellia.h>
+#include <crypto++/cast.h>
+#include <crypto++/idea.h>
+#include <crypto++/mars.h>
+#include <crypto++/rc2.h>
+#include <crypto++/rc5.h>
+#include <crypto++/rc6.h>
+#include <crypto++/skipjack.h>
+#define CRYPTOPP_ENABLE_NAMESPACE_WEAK 1
+#include <crypto++/arc4.h>
+
+
 #include "KMIPNumber.h"
 #include "EnumMacros.h"
+
+#define DECLARE_KMIPENUM_LIST(name, list)\
+    DECLARE_ENUM_LIST(name, list)\
+    virtual std::string getValueName() const {\
+        return VALUEToString(static_cast<VALUE>(getValue()));\
+    }\
+    virtual bool setValueFromName(const std::string &sName) {\
+        setValue(VALUEFromString(sName));\
+        return isValid();\
+    }\
 
 class KMIPEnumeration : public KMIPNumber<uint32_t> {
     public:
         KMIPEnumeration(int iTag, uint32_t eValue = 0, uint32_t eFirst = 0, uint32_t eLast = -1);
         virtual bool isValid() const;
+        virtual bool isValid(uint32_t uiVal) const;
+        virtual std::string getValueName() const;
+        virtual bool setValueFromName(const std::string &sName);
+        virtual bool setValueFromXML(const std::string &sValue);
+        virtual std::string getXMLValue() const;
     protected:
         uint32_t eFirst;
         uint32_t eLast;
@@ -24,7 +58,7 @@ class KMIPCredentialType : public KMIPEnumeration {
     b(Attestation,3)\
     a(NumValues)
 
-    DECLARE_ENUM_LIST(VALUE, CREDENTIAL_TYPE_LIST);
+    DECLARE_KMIPENUM_LIST(VALUE, CREDENTIAL_TYPE_LIST);
     KMIPCredentialType(uint32_t eValue);
 };
 
@@ -38,7 +72,7 @@ class KMIPKeyCompressionType : public KMIPEnumeration {
     a(NumValues)
 
 
-    DECLARE_ENUM_LIST(VALUE, KEY_COMPRESSION_TYPE_LIST);
+    DECLARE_KMIPENUM_LIST(VALUE, KEY_COMPRESSION_TYPE_LIST);
     KMIPKeyCompressionType(uint32_t eValue);
 };
 
@@ -69,7 +103,7 @@ class KMIPKeyFormatType : public KMIPEnumeration {
     b(PKCS_12,0x16) \
     a(NumValues)
 
-    DECLARE_ENUM_LIST(VALUE, KEY_FORMAT_TYPE_LIST);
+    DECLARE_KMIPENUM_LIST(VALUE, KEY_FORMAT_TYPE_LIST);
     KMIPKeyFormatType(uint32_t eValue);
 };
 
@@ -83,7 +117,7 @@ class KMIPWrappingMethod : public KMIPEnumeration {
     b(TR_31,0x5) \
     a(NumValues)
 
-    DECLARE_ENUM_LIST(VALUE, WRAPPING_METHOD_LIST);
+    DECLARE_KMIPENUM_LIST(VALUE, WRAPPING_METHOD_LIST);
     KMIPWrappingMethod(uint32_t eValue);
 };
 
@@ -160,7 +194,7 @@ class KMIPRecommendedCurve : public KMIPEnumeration {
     b(BRAINPOOLP512T1,0x44) \
     a(NumValues)
 
-    DECLARE_ENUM_LIST(VALUE, RECOMMENDED_CURVE_LIST);
+    DECLARE_KMIPENUM_LIST(VALUE, RECOMMENDED_CURVE_LIST);
     KMIPRecommendedCurve(uint32_t eValue);
 };
 
@@ -171,7 +205,7 @@ class KMIPCertificateType : public KMIPEnumeration {
     b(PGP,0x2) \
     a(NumValues)
 
-    DECLARE_ENUM_LIST(VALUE, CERTIFICATE_TYPE_LIST);
+    DECLARE_KMIPENUM_LIST(VALUE, CERTIFICATE_TYPE_LIST);
     KMIPCertificateType(uint32_t eValue);
 };
 
@@ -187,7 +221,7 @@ class KMIPDigitalSignatureAlgorithm : public KMIPEnumeration {
     b(SHA_512WithRSAEncryptionPKCS_1V1_5,0x7) \
     b(RSASSAPSS,0x8) \
     b(DSAWithSHA_1,0x9) \
-    b(DECLARE_ENUM_LISTSAWithSHA224,0x0000000A) \
+    b(DECLARE_KMIPENUM_LISTSAWithSHA224,0x0000000A) \
     b(DSAWithSHA256,0x0000000B) \
     b(ECDSAWithSHA_1,0x0000000C) \
     b(ECDSAWithSHA224,0x0000000D) \
@@ -196,7 +230,7 @@ class KMIPDigitalSignatureAlgorithm : public KMIPEnumeration {
     b(ECDSAWithSHA512,0x10) \
     a(NumValues)
 
-    DECLARE_ENUM_LIST(VALUE, DIGITAL_SIGNATURE_ALGORITHM_LIST);
+    DECLARE_KMIPENUM_LIST(VALUE, DIGITAL_SIGNATURE_ALGORITHM_LIST);
     KMIPDigitalSignatureAlgorithm(uint32_t eValue);
 };
 
@@ -207,7 +241,7 @@ class KMIPSplitKeyMethod : public KMIPEnumeration {
     b(PGP,0x2) \
     a(NumValues)
 
-    DECLARE_ENUM_LIST(VALUE, SPLIT_KEY_METHOD_LIST);
+    DECLARE_KMIPENUM_LIST(VALUE, SPLIT_KEY_METHOD_LIST);
     KMIPSplitKeyMethod(uint32_t eValue);
 };
 
@@ -218,7 +252,7 @@ class KMIPSecretDataType : public KMIPEnumeration {
     b(Seed,0x2) \
     a(NumValues)
 
-    DECLARE_ENUM_LIST(VALUE, SECRET_DATA_TYPE_LIST);
+    DECLARE_KMIPENUM_LIST(VALUE, SECRET_DATA_TYPE_LIST);
     KMIPSecretDataType(uint32_t eValue);
 };
 
@@ -227,7 +261,7 @@ class KMIPOpaqueDataType : public KMIPEnumeration {
     b(Unknown,0)\
     a(NumValues)
 
-    DECLARE_ENUM_LIST(VALUE, OPAQUE_DATA_TYPE_LIST);
+    DECLARE_KMIPENUM_LIST(VALUE, OPAQUE_DATA_TYPE_LIST);
     KMIPOpaqueDataType(uint32_t eValue);
 };
 
@@ -238,7 +272,7 @@ class KMIPNameType : public KMIPEnumeration {
     b(URI,0x2) \
     a(NumValues)
 
-    DECLARE_ENUM_LIST(VALUE, NAME_TYPE_LIST);
+    DECLARE_KMIPENUM_LIST(VALUE, NAME_TYPE_LIST);
     KMIPNameType(uint32_t eValue);
 };
 
@@ -256,7 +290,7 @@ class KMIPObjectType : public KMIPEnumeration {
     b(PGPKey,0x9) \
     a(NumValues)
 
-    DECLARE_ENUM_LIST(VALUE, OBJECT_TYPE_LIST);
+    DECLARE_KMIPENUM_LIST(VALUE, OBJECT_TYPE_LIST);
     KMIPObjectType(uint32_t eValue);
 };
 
@@ -292,8 +326,40 @@ class KMIPCryptographicAlgorithm : public KMIPEnumeration {
     b(OneTimePad,0x0000001B) \
     a(NumValues)
 
-    DECLARE_ENUM_LIST(VALUE, CRYPTOGRAPHIC_ALGORITHM_LIST);
+
+#define getCryptoPPAlg(e, val) \
+    (e == KMIPCryptographicAlgorithm::DES ? CryptoPP::DES::val :\
+    e == KMIPCryptographicAlgorithm::DES3 ? CryptoPP::DES_EDE3::val :\
+    e == KMIPCryptographicAlgorithm::AES ? CryptoPP::AES::val :\
+    e == KMIPCryptographicAlgorithm::Blowfish ? CryptoPP::Blowfish::val :\
+    e == KMIPCryptographicAlgorithm::Camellia ? CryptoPP::Camellia::val :\
+    e == KMIPCryptographicAlgorithm::CAST5 ? CryptoPP::CAST128::val :\
+    e == KMIPCryptographicAlgorithm::IDEA ? CryptoPP::IDEA::val :\
+    e == KMIPCryptographicAlgorithm::MARS ? CryptoPP::MARS::val :\
+    e == KMIPCryptographicAlgorithm::RC2 ? CryptoPP::RC2::val :\
+    e == KMIPCryptographicAlgorithm::RC4 ? CryptoPP::Weak::ARC4::val :\
+    e == KMIPCryptographicAlgorithm::RC5 ? CryptoPP::RC5::val :\
+    e == KMIPCryptographicAlgorithm::SKIPJACK ? CryptoPP::SKIPJACK::val :\
+    e == KMIPCryptographicAlgorithm::Twofish ? CryptoPP::Twofish::val :\
+    0)
+            
+#define getCryptoPPAlgVariableLength(e, val) \
+    (e == KMIPCryptographicAlgorithm::AES ? CryptoPP::AES::val :\
+    e == KMIPCryptographicAlgorithm::Blowfish ? CryptoPP::Blowfish::val :\
+    e == KMIPCryptographicAlgorithm::Camellia ? CryptoPP::Camellia::val :\
+    e == KMIPCryptographicAlgorithm::CAST5 ? CryptoPP::CAST128::val :\
+    e == KMIPCryptographicAlgorithm::MARS ? CryptoPP::MARS::val :\
+    e == KMIPCryptographicAlgorithm::RC2 ? CryptoPP::RC2::val :\
+    e == KMIPCryptographicAlgorithm::RC4 ? CryptoPP::Weak::ARC4::val :\
+    e == KMIPCryptographicAlgorithm::RC5 ? CryptoPP::RC5::val :\
+    e == KMIPCryptographicAlgorithm::Twofish ? CryptoPP::Twofish::val :\
+    0)
+            
+
+    DECLARE_KMIPENUM_LIST(VALUE, CRYPTOGRAPHIC_ALGORITHM_LIST);
     KMIPCryptographicAlgorithm(uint32_t eValue);
+    static bool isFixedLength(uint32_t iAlg);
+    static bool isSymmetric(uint32_t iAlg);
 };
 
 class KMIPBlockCipherMode : public KMIPEnumeration {
@@ -318,7 +384,7 @@ class KMIPBlockCipherMode : public KMIPEnumeration {
     b(X9_102AKW2,0x11) \
     a(NumValues)
 
-    DECLARE_ENUM_LIST(VALUE, BLOCK_CIPHER_MODE_LIST);
+    DECLARE_KMIPENUM_LIST(VALUE, BLOCK_CIPHER_MODE_LIST);
     KMIPBlockCipherMode(uint32_t eValue);
 };
 
@@ -337,7 +403,7 @@ class KMIPPaddingMethod : public KMIPEnumeration {
     b(PSS,0x0000000A) \
     a(NumValues)
 
-    DECLARE_ENUM_LIST(VALUE, PADDING_METHOD_LIST);
+    DECLARE_KMIPENUM_LIST(VALUE, PADDING_METHOD_LIST);
     KMIPPaddingMethod(uint32_t eValue);
 };
 
@@ -359,7 +425,7 @@ class KMIPHashingAlgorithm : public KMIPEnumeration {
     b(SHA_512_256,0x0000000D) \
     a(NumValues)
 
-    DECLARE_ENUM_LIST(VALUE, HASHING_ALGORITHM_LIST);
+    DECLARE_KMIPENUM_LIST(VALUE, HASHING_ALGORITHM_LIST);
     KMIPHashingAlgorithm(uint32_t eValue);
 };
 
@@ -392,7 +458,7 @@ class KMIPKeyRoleType : public KMIPEnumeration {
     b(TRKBK,0x18) \
     a(NumValues)
 
-    DECLARE_ENUM_LIST(VALUE, KEY_ROLE_TYPE_LIST);
+    DECLARE_KMIPENUM_LIST(VALUE, KEY_ROLE_TYPE_LIST);
     KMIPKeyRoleType(uint32_t eValue);
 };
 
@@ -407,7 +473,7 @@ class KMIPState : public KMIPEnumeration {
     b(DestroyedCompromised,0x6) \
     a(NumValues)
 
-    DECLARE_ENUM_LIST(VALUE, STATE_LIST);
+    DECLARE_KMIPENUM_LIST(VALUE, STATE_LIST);
     KMIPState(uint32_t eValue);
 };
 
@@ -423,7 +489,7 @@ class KMIPRevocationReasonCode : public KMIPEnumeration {
     b(PrivilegeWithdrawn,0x7) \
     a(NumValues)
 
-    DECLARE_ENUM_LIST(VALUE, REVOCATION_REASON_CODE_LIST);
+    DECLARE_KMIPENUM_LIST(VALUE, REVOCATION_REASON_CODE_LIST);
     KMIPRevocationReasonCode(uint32_t eValue);
 };
 
@@ -445,7 +511,7 @@ class KMIPLinkType : public KMIPEnumeration {
     b(PKCS_12PasswordLink,0x0000010D) \
     a(NumValues)
 
-    DECLARE_ENUM_LIST(VALUE, LINK_TYPE_LIST);
+    DECLARE_KMIPENUM_LIST(VALUE, LINK_TYPE_LIST);
     KMIPLinkType(uint32_t eValue);
 };
 
@@ -462,7 +528,7 @@ class KMIPDerivationMethod : public KMIPEnumeration {
 	b(AsymmetricKey,	0x8) \
 	a(NumValues)
 
-	DECLARE_ENUM_LIST(VALUE, DERIVATION_METHOD_LIST)
+	DECLARE_KMIPENUM_LIST(VALUE, DERIVATION_METHOD_LIST)
 	KMIPDerivationMethod(uint32_t eValue);
 };
 
@@ -475,7 +541,7 @@ class KMIPCertificateRequestType : public KMIPEnumeration {
 	b(PGP,	0x4) \
 	a(NumValues)
 
-	DECLARE_ENUM_LIST(VALUE, CERTIFICATE_REQUEST_TYPE_LIST)
+	DECLARE_KMIPENUM_LIST(VALUE, CERTIFICATE_REQUEST_TYPE_LIST)
 	KMIPCertificateRequestType(uint32_t eValue);
 };
 
@@ -486,7 +552,7 @@ class KMIPValidityIndicator : public KMIPEnumeration {
 	b(Unknown,	0x3) \
 	a(NumValues)
 
-	DECLARE_ENUM_LIST(VALUE, VALIDITY_INDICATOR_LIST)
+	DECLARE_KMIPENUM_LIST(VALUE, VALIDITY_INDICATOR_LIST)
 	KMIPValidityIndicator(uint32_t eValue);
 };
 
@@ -507,7 +573,7 @@ class KMIPQueryFunction : public KMIPEnumeration {
 	b(QueryClientRegistrationMethods,	0x0000000C) \
 	a(NumValues)
 
-	DECLARE_ENUM_LIST(VALUE, QUERY_FUNCTION_LIST)
+	DECLARE_KMIPENUM_LIST(VALUE, QUERY_FUNCTION_LIST)
 	KMIPQueryFunction(uint32_t eValue);
 };
 
@@ -521,7 +587,7 @@ class KMIPCancellationResult : public KMIPEnumeration {
 	b(Unavailable,	0x5) \
 	a(NumValues)
 
-	DECLARE_ENUM_LIST(VALUE, CANCELLATION_RESULT_LIST)
+	DECLARE_KMIPENUM_LIST(VALUE, CANCELLATION_RESULT_LIST)
 	KMIPCancellationResult(uint32_t eValue);
 };
 
@@ -532,7 +598,7 @@ class KMIPPutFunction : public KMIPEnumeration {
 	b(Replace,	0x2) \
 	a(NumValues)
 
-	DECLARE_ENUM_LIST(VALUE, PUT_FUNCTION_LIST)
+	DECLARE_KMIPENUM_LIST(VALUE, PUT_FUNCTION_LIST)
 	KMIPPutFunction(uint32_t eValue);
 };
 
@@ -584,7 +650,7 @@ class KMIPOperation : public KMIPEnumeration {
 	b(Export,	0x0000002B) \
 	a(NumValues)
 
-	DECLARE_ENUM_LIST(VALUE, OPERATION_LIST)
+	DECLARE_KMIPENUM_LIST(VALUE, OPERATION_LIST)
 	KMIPOperation(uint32_t eValue);
 };
 
@@ -596,7 +662,7 @@ class KMIPResultStatus : public KMIPEnumeration {
 	b(OperationUndone,	0x3) \
 	a(NumValues)
 
-	DECLARE_ENUM_LIST(VALUE, RESULT_STATUS_LIST)
+	DECLARE_KMIPENUM_LIST(VALUE, RESULT_STATUS_LIST)
 	KMIPResultStatus(uint32_t eValue);
 };
 
@@ -630,7 +696,7 @@ class KMIPResultReason : public KMIPEnumeration {
 	b(GeneralFailure,	0x100) \
 	a(NumValues)
 
-	DECLARE_ENUM_LIST(VALUE, RESULT_REASON_LIST)
+	DECLARE_KMIPENUM_LIST(VALUE, RESULT_REASON_LIST)
 	KMIPResultReason(uint32_t eValue);
 };
 
@@ -642,7 +708,7 @@ class KMIPBatchErrorContinuationOption : public KMIPEnumeration {
 	b(Undo,	0x3) \
 	a(NumValues)
 
-	DECLARE_ENUM_LIST(VALUE, BATCH_ERROR_CONTINUATION_OPTION_LIST)
+	DECLARE_KMIPENUM_LIST(VALUE, BATCH_ERROR_CONTINUATION_OPTION_LIST)
 	KMIPBatchErrorContinuationOption(uint32_t eValue);
 };
 
@@ -653,7 +719,7 @@ class KMIPUsageLimitsUnit : public KMIPEnumeration {
 	b(Object,	0x2) \
 	a(NumValues)
 
-	DECLARE_ENUM_LIST(VALUE, USAGE_LIMITS_UNIT_LIST)
+	DECLARE_KMIPENUM_LIST(VALUE, USAGE_LIMITS_UNIT_LIST)
 	KMIPUsageLimitsUnit(uint32_t eValue);
 };
 
@@ -664,7 +730,7 @@ class KMIPEncodingOption : public KMIPEnumeration {
 	b(TTLVEncoding,	0x2) \
 	a(NumValues)
 
-	DECLARE_ENUM_LIST(VALUE, ENCODING_OPTION_LIST)
+	DECLARE_KMIPENUM_LIST(VALUE, ENCODING_OPTION_LIST)
 	KMIPEncodingOption(uint32_t eValue);
 };
 
@@ -675,7 +741,7 @@ class KMIPObjectGroupMember : public KMIPEnumeration {
 	b(GroupMemberDefault,	0x2) \
 	a(NumValues)
 
-	DECLARE_ENUM_LIST(VALUE, OBJECT_GROUP_MEMBER_LIST)
+	DECLARE_KMIPENUM_LIST(VALUE, OBJECT_GROUP_MEMBER_LIST)
 	KMIPObjectGroupMember(uint32_t eValue);
 };
 
@@ -691,7 +757,7 @@ class KMIPAlternativeNameType : public KMIPEnumeration {
 	b(IPAddress,	0x7) \
 	a(NumValues)
 
-	DECLARE_ENUM_LIST(VALUE, ALTERNATIVE_NAME_TYPE_LIST)
+	DECLARE_KMIPENUM_LIST(VALUE, ALTERNATIVE_NAME_TYPE_LIST)
 	KMIPAlternativeNameType(uint32_t eValue);
 };
 
@@ -702,7 +768,7 @@ class KMIPKeyValueLocationType : public KMIPEnumeration {
 	b(URI,	0x2) \
 	a(NumValues)
 
-	DECLARE_ENUM_LIST(VALUE, KEY_VALUE_LOCATION_TYPE_LIST)
+	DECLARE_KMIPENUM_LIST(VALUE, KEY_VALUE_LOCATION_TYPE_LIST)
 	KMIPKeyValueLocationType(uint32_t eValue);
 };
 
@@ -714,7 +780,7 @@ class KMIPAttestationType : public KMIPEnumeration {
 	b(SAMLAssertion,	0x3) \
 	a(NumValues)
 
-	DECLARE_ENUM_LIST(VALUE, ATTESTATION_TYPE_LIST)
+	DECLARE_KMIPENUM_LIST(VALUE, ATTESTATION_TYPE_LIST)
 	KMIPAttestationType(uint32_t eValue);
 };
 
@@ -729,7 +795,7 @@ class KMIPRNGAlgorithm : public KMIPEnumeration {
 	b(ANSIX9_62,	0x6) \
 	a(NumValues)
 
-	DECLARE_ENUM_LIST(VALUE, RNG_ALGORITHM_LIST)
+	DECLARE_KMIPENUM_LIST(VALUE, RNG_ALGORITHM_LIST)
 	KMIPRNGAlgorithm(uint32_t eValue);
 };
 
@@ -743,7 +809,7 @@ class KMIPDRBGAlgorithm : public KMIPEnumeration {
 	b(CTR,	0x5) \
 	a(NumValues)
 
-	DECLARE_ENUM_LIST(VALUE, DRBG_ALGORITHM_LIST)
+	DECLARE_KMIPENUM_LIST(VALUE, DRBG_ALGORITHM_LIST)
 	KMIPDRBGAlgorithm(uint32_t eValue);
 };
 
@@ -759,7 +825,7 @@ class KMIPFIPS186Variation : public KMIPEnumeration {
 	b(kChangeNotice,	0x7) \
 	a(NumValues)
 
-	DECLARE_ENUM_LIST(VALUE, FIPS186VARIATION_LIST)
+	DECLARE_KMIPENUM_LIST(VALUE, FIPS186VARIATION_LIST)
 	KMIPFIPS186Variation(uint32_t eValue);
 };
 
@@ -771,7 +837,7 @@ class KMIPValidationAuthorityType : public KMIPEnumeration {
 	b(CommonCriteria,	0x3) \
 	a(NumValues)
 
-	DECLARE_ENUM_LIST(VALUE, VALIDATION_AUTHORITY_TYPE_LIST)
+	DECLARE_KMIPENUM_LIST(VALUE, VALIDATION_AUTHORITY_TYPE_LIST)
 	KMIPValidationAuthorityType(uint32_t eValue);
 };
 
@@ -785,7 +851,7 @@ class KMIPValidationType : public KMIPEnumeration {
 	b(Hybrid,	0x5) \
 	a(NumValues)
 
-	DECLARE_ENUM_LIST(VALUE, VALIDATION_TYPE_LIST)
+	DECLARE_KMIPENUM_LIST(VALUE, VALIDATION_TYPE_LIST)
 	KMIPValidationType(uint32_t eValue);
 };
 
@@ -950,7 +1016,7 @@ class KMIPProfileName : public KMIPEnumeration {
 	b(XMLServerKMIPV1_4,	0x0000009C) \
 	a(NumValues)
 
-	DECLARE_ENUM_LIST(VALUE, PROFILE_NAME_LIST)
+	DECLARE_KMIPENUM_LIST(VALUE, PROFILE_NAME_LIST)
 	KMIPProfileName(uint32_t eValue);
 };
 
@@ -962,7 +1028,7 @@ class KMIPUnwrapMode : public KMIPEnumeration {
 	b(NotProcessed,	0x3) \
 	a(NumValues)
 
-	DECLARE_ENUM_LIST(VALUE, UNWRAP_MODE_LIST)
+	DECLARE_KMIPENUM_LIST(VALUE, UNWRAP_MODE_LIST)
 	KMIPUnwrapMode(uint32_t eValue);
 };
 
@@ -978,7 +1044,7 @@ class KMIPDestroyAction : public KMIPEnumeration {
 	b(Shredded,	0x7) \
 	a(NumValues)
 
-	DECLARE_ENUM_LIST(VALUE, DESTROY_ACTION_LIST)
+	DECLARE_KMIPENUM_LIST(VALUE, DESTROY_ACTION_LIST)
 	KMIPDestroyAction(uint32_t eValue);
 };
 
@@ -990,7 +1056,7 @@ class KMIPShreddingAlgorithm : public KMIPEnumeration {
 	b(Unsupported,	0x3) \
 	a(NumValues)
 
-	DECLARE_ENUM_LIST(VALUE, SHREDDING_ALGORITHM_LIST)
+	DECLARE_KMIPENUM_LIST(VALUE, SHREDDING_ALGORITHM_LIST)
 	KMIPShreddingAlgorithm(uint32_t eValue);
 };
 
@@ -1002,7 +1068,7 @@ class KMIPRNGMode : public KMIPEnumeration {
 	b(NonSharedInstantiation,	0x3) \
 	a(NumValues)
 
-	DECLARE_ENUM_LIST(VALUE, RNG_MODE_LIST)
+	DECLARE_KMIPENUM_LIST(VALUE, RNG_MODE_LIST)
 	KMIPRNGMode(uint32_t eValue);
 };
 
@@ -1017,7 +1083,7 @@ class KMIPClientRegistrationMethod : public KMIPEnumeration {
 	a(NumValues)
 
 
-	DECLARE_ENUM_LIST(VALUE, CLIENT_REGISTRATION_METHOD_LIST)
+	DECLARE_KMIPENUM_LIST(VALUE, CLIENT_REGISTRATION_METHOD_LIST)
 	KMIPClientRegistrationMethod(uint32_t eValue);
 };
 
@@ -1029,7 +1095,7 @@ class KMIPKeyWrapType : public KMIPEnumeration {
 	a(NumValues)
 
 
-	DECLARE_ENUM_LIST(VALUE, KEY_WRAP_TYPE_LIST)
+	DECLARE_KMIPENUM_LIST(VALUE, KEY_WRAP_TYPE_LIST)
 	KMIPKeyWrapType(uint32_t eValue);
 };
 
@@ -1040,7 +1106,7 @@ class KMIPMaskGenerator : public KMIPEnumeration {
 	a(NumValues)
 
 
-	DECLARE_ENUM_LIST(VALUE, MASK_GENERATOR_LIST)
+	DECLARE_KMIPENUM_LIST(VALUE, MASK_GENERATOR_LIST)
 	KMIPMaskGenerator(uint32_t eValue);
 };
 

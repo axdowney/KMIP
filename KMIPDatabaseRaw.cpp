@@ -203,3 +203,35 @@ int KMIPDatabaseRaw::addObjects(const std::list<std::shared_ptr<KMIPManagedObjec
 
 std::list<std::string> KMIPDatabaseRaw::locate(const std::list<std::shared_ptr<KMIPAttribute> > &listAttributes,
         int iMaxItems, int iOffset, int iStorageStatusMask, uint32_t iObjectGroupMember) {}
+
+std::string KMIPDatabaseRaw::getNextID(int iMOType) {
+    auto mapIter = mapTypeToID.find(iMOType);
+    long int liID = 0;
+    bool bOK = true;
+    if (mapIter == mapTypeToID.end()) {
+        bOK = (spconn && spconn->is_open()) || connect(sDatabaseStr);
+        if (bOK) {
+            std::string sType = makeID(iMOType);
+            std::string sQuery = "SELECT uniqueid FROM managedobject WHERE uniqueid LIKE " + spconn->quote(sType + "%") + " ORDER BY CAST(uniqueid AS INT) DESC LIMIT 1;";
+            auto res = runQuery(std::shared_ptr<SQLQuery>(new SQLQueryRaw(sQuery)));
+            bOK = res.getSuccess();
+            if (bOK) {
+                std::string sID;
+                if (res.size() == 1) {
+                    res[0][0].to(sID);
+                    bOK = getIDParts(sID, iMOType, liID);
+                    if (bOK) {
+                        mapTypeToID[iMOType] = ++liID;
+                    }
+                } else {
+                    mapTypeToID[iMOType] = liID + 1;
+                }
+            }
+        }
+    } else {
+        liID = mapIter->second++;
+    }
+
+
+    return bOK ? makeID(iMOType, liID) : std::string();
+}

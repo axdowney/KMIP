@@ -16,7 +16,11 @@ class KMIPMessageStatus {
 
         bool addSuccess(std::shared_ptr<KMIPBatchItem> spkbi, KMIPStructSP spkstResponsePayload);
         bool addFailure(std::shared_ptr<KMIPBatchItem> spkbi, int32_t eReason, const std::string &sMessage);
+        void undo();
+        void clear();
+        std::shared_ptr<KMIPResponseMessage> createMessage() const;
 
+        void setFromHeader(std::shared_ptr<KMIPHeader> spheader);
         GETSET(VersionMajor, int, iMajor);
         GETSET(VersionMinor, int, iMinor);
         GETSET(MaxResponseSize, int, iMax);

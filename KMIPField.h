@@ -52,6 +52,10 @@ class KMIPField {
         virtual std::string getTTLVValue() const;
         virtual std::string getTTLVValueTrim() const;
 
+        virtual bool setValueFromXML(const std::string &sValue);
+        virtual std::string getXMLValue() const;
+
+
         static const kmipsize_t kiInvalidLength = -1;
 
     protected:
