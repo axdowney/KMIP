@@ -21,7 +21,7 @@ bool KMIPTestCaseValidator::loadXML(const std::string &sExpected) {
 }
 
 bool KMIPTestCaseValidator::matchesExpected(const KMIPField *pkf) {
-    return matchesExpected(pkf, doc);
+    return matchesExpected(pkf, doc.first_child());
 }
 
 bool KMIPTestCaseValidator::matchesExpected(const KMIPField *pkf, const pugi::xml_node &node) {

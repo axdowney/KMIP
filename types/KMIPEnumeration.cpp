@@ -1,4 +1,5 @@
 #include "KMIPEnumeration.h"
+#include <openssl/obj_mac.h>
 
 KMIPEnumeration::KMIPEnumeration(int iTag, uint32_t eValue, uint32_t eFirst, uint32_t eLast) : KMIPNumber(iTag, kmip::TypeEnumeration, eValue) {
     this->eFirst = eFirst;
@@ -53,6 +54,85 @@ IMPLEMENT_ENUM_TO_STRING(KMIPWrappingMethod, VALUE, Unknown, "", WRAPPING_METHOD
 KMIPRecommendedCurve::KMIPRecommendedCurve(uint32_t eValue) : KMIPEnumeration(kmip::TagRecommendedCurve, eValue, KMIPRecommendedCurve::Unknown, KMIPRecommendedCurve::NumValues) {}
 IMPLEMENT_ENUM_TO_STRING(KMIPRecommendedCurve, VALUE, Unknown, "", RECOMMENDED_CURVE_LIST);
 
+int KMIPRecommendedCurve::CurveToNID(uint32_t eValue) {
+    int iRet = Unknown;
+#if 0
+    switch (eValue) {
+        case P_192:
+            iRet = NID_p
+
+    b(K_163,0x2) \
+    b(B_163,0x3) \
+    b(P_224,0x4) \
+    b(K_233,0x5) \
+    b(B_233,0x6) \
+    b(P_256,0x7) \
+    b(K_283,0x8) \
+    b(B_283,0x9) \
+    b(P_384,0x0000000A) \
+    b(K_409,0x0000000B) \
+    b(B_409,0x0000000C) \
+    b(P_521,0x0000000D) \
+    b(K_571,0x0000000E) \
+    b(B_571,0x0000000F) \
+    b(SECP112R1,0x10) \
+    b(SECP112R2,0x11) \
+    b(SECP128R1,0x12) \
+    b(SECP128R2,0x13) \
+    b(SECP160K1,0x14) \
+    b(SECP160R1,0x15) \
+    b(SECP160R2,0x16) \
+    b(SECP160K1ECP192K1,0x17) \
+    b(SECP224K1,0x18) \
+    b(SECP256K1,0x19) \
+    b(SECT113R1,0x0000001A) \
+    b(SECT113R2,0x0000001B) \
+    b(SECT131R1,0x0000001C) \
+    b(SECT131R2,0x0000001D) \
+    b(SECT163R1,0x0000001E) \
+    b(SECT193R1,0x0000001C0001F) \
+    b(SECT193R2,0x20) \
+    b(SECT239K1,0x21) \
+    b(ANSIX9P192V2,0x22) \
+    b(ANSIX9P192V3,0x23) \
+    b(ANSIX9P239V1,0x24) \
+    b(ANSIX9P239V2,0x225) \
+    b(ANSIX9P239V3,0x26) \
+    b(ANSIX9C2PNB163V1,0x27) \
+    b(ANSIX9C2PNB163V2,0x28) \
+    b(ANSIX9C2PNB163V3,0x29) \
+    b(ANSIX9C2PNB176V1,0x0000002A) \
+    b(ANSIX9C2TNB191V1,0x0000002B) \
+    b(ANSIX9C2TNB191V2,0x0000002C)      \
+    b(ANSIX9C2TNB191V3,0x0000002D) \
+    b(ANSIX9C2PNB208W1,0x0000002E) \
+    b(ANSIX9C2TNB239V1,0x0000002F) \
+    b(ANSIX9C2TNB239V2,0x30) \
+    b(ANSIX9C2TNB239V1TNB239V3,0x31) \
+    b(ANSIX9C2PNB272W1,0x32) \
+    b(ANSIX9C2PNB304W1,0x33) \
+    b(ANSIX9C2TNB359V1,0x34) \
+    b(ANSIX9C2PNB368W1,0x35) \
+    b(ANSIX9C2TNB239V1TNB239V3B431R1,0x36) \
+    b(BRAINPOOLP160R1,0x37) \
+    b(BRAINPOOLP160T1,0x38) \
+    b(BRAINPOOLP192R1,0x39) \
+    b(BRAINPOOLP192T1,0x0000003A) \
+    b(BRAINPOOLP192R1224R1,0x0000003B) \
+    b(BRAINPOOLP224T1,0x0000003C) \
+    b(BRAINPOOLP256R1,0x0000003D) \
+    b(BRAINPOOLP256T1,0x0000003E) \
+    b(BRAINPOOLP320R1,0x0000003C000003F) \
+    b(BRAINPOOLP320T1,0x40) \
+    b(BRAINPOOLP384R1,0x41) \
+    b(BRAINPOOLP320T1NPOOLP384T1,0x42) \
+    b(BRAINPOOLP512R1,0x43) \
+    b(BRAINPOOLP512T1,0x44) \
+    }
+#endif
+    return iRet;
+}
+
 KMIPCertificateType::KMIPCertificateType(uint32_t eValue) : KMIPEnumeration(kmip::TagCertificateType, eValue, KMIPCertificateType::Unknown, KMIPCertificateType::NumValues) {}
 IMPLEMENT_ENUM_TO_STRING(KMIPCertificateType, VALUE, Unknown, "", CERTIFICATE_TYPE_LIST);
 
@@ -83,6 +163,25 @@ bool KMIPCryptographicAlgorithm::isFixedLength(uint32_t iAlg) {
 
 bool KMIPCryptographicAlgorithm::isSymmetric(uint32_t iAlg) {
     return getCryptoPPAlg(iAlg, MAX_KEYLENGTH) > 0;
+}
+
+bool KMIPCryptographicAlgorithm::isAsymmetric(uint32_t iAlg) {
+    bool bRet = false;
+    switch (iAlg) {
+        case RSA:
+        case DSA:
+        case ECDSA:
+        case DH:
+        case ECDH:
+        case ECMQV:
+        case EC:
+            bRet = true;
+            break;
+        default:
+            break;
+    }
+
+    return bRet;
 }
 
 KMIPBlockCipherMode::KMIPBlockCipherMode(uint32_t eValue) : KMIPEnumeration(kmip::TagBlockCipherMode, eValue, KMIPBlockCipherMode::Unknown, KMIPBlockCipherMode::NumValues) {}

@@ -54,4 +54,12 @@ TEST(KMIPCreate, test1) {
     KMIPStructSP spkstResPay = spkbi->getResponsePayload();
     ASSERT_TRUE(spkstResPay.get());
     ASSERT_FALSE(spkstResPay->getChildValue<KMIPTextString>(kmip::TagUniqueIdentifier, std::string()).empty());
+    spkBatchItem->setOperation(KMIPOperation::Destroy);
+    spkst->clear();
+    spkst->setOrderedTextString(kmip::TagUniqueIdentifier, spkstResPay->getChildValue<KMIPTextString>(kmip::TagUniqueIdentifier, std::string()));
+    
+    std::shared_ptr<KMIPResponseMessage> spkrmRes2 = kmh.handleMessage(spkMessage);
+    std::shared_ptr<KMIPBatchItem> spkbi2 = spkrmRes2->getBatchItem();
+    ASSERT_TRUE(spkbi2.get());
+    EXPECT_EQ(spkbi2->getResultStatus(), KMIPResultStatus::Success);
 }

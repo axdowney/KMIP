@@ -9,6 +9,7 @@
 
 //Operations
 #include "KMIPOperationCreate.h"
+#include "KMIPOperationDestroy.h"
 
 KMIPMessageHandler::KMIPMessageHandler() {}
 KMIPMessageHandler::KMIPMessageHandler(std::shared_ptr<KMIPDatabase> spkd) : spkd(spkd) {}
@@ -35,6 +36,7 @@ std::shared_ptr<KMIPResponseMessage> KMIPMessageHandler::handleMessage(std::shar
     }
 
     if (bOK) {
+        kms.setPlaceHolderID(sPlaceHolder);
         bOK = handleBatch(kms, listBatchItems);
     }
 
@@ -67,6 +69,8 @@ bool KMIPMessageHandler::handleBatch(KMIPMessageStatus &kms, const std::list<std
             spkd->endWork(bOK);
             if (!bOK) {
                 kms.undo();
+            } else if (!kms.getPlaceHolderID().empty()) {
+                sPlaceHolder = kms.getPlaceHolderID();
             }
         }
     }   
@@ -81,6 +85,11 @@ bool KMIPMessageHandler::handleBatchItem(KMIPMessageStatus &kms, std::shared_ptr
             case KMIPOperation::Create:{
                     KMIPOperationCreate koCreate;
                     bOK = koCreate.handleRequest(spkd, kms, spBatchItem);
+                }
+                break;
+            case KMIPOperation::Destroy:{
+                    KMIPOperationDestroy koDestroy;
+                    bOK = koDestroy.handleRequest(spkd, kms, spBatchItem);
                 }
                 break;
             default:

@@ -21,10 +21,17 @@ bool KMIPOperationCreate::handleRequest(std::shared_ptr<KMIPDatabase> spkd, KMIP
     std::list<std::shared_ptr<KMIPAttribute> > listAttributes;
     if (bOK) {
         spkst = spkbi->getRequestPayload();
+        if (!spkst) {
+            bOK = false;
+            kms.addFailure(spkbi, KMIPResultReason::InvalidMessage, "Request Payload not found.");
+        }
     }
 
     if (spkst) {
         bOK = spkd->gatherAttributes(spkst->getChild<KMIPTemplateAttribute>(kmip::TagTemplateAttribute), listAttributes);
+        if (!bOK) {
+            kms.addFailure(spkbi, KMIPResultReason::InvalidField, "Incorrect attribute value(s) specified.");
+        }
     }
 
     /* Get Required Attributes */

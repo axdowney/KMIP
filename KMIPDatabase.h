@@ -57,7 +57,7 @@ class KMIPDatabase : public DatabaseObject {
             return bRet;
         }
 
-        virtual bool gatherAttributes(std::shared_ptr<KMIPTemplateAttribute> spkta, std::list<std::shared_ptr<KMIPAttribute> > &listAttributes) {
+        virtual bool gatherAttributes(std::shared_ptr<KMIPTemplateAttributeStruct> spkta, std::list<std::shared_ptr<KMIPAttribute> > &listAttributes) {
             if (spkta) {
                 listAttributes = spkta->getAttributes();
             }

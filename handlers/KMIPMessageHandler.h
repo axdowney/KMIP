@@ -22,6 +22,7 @@ class KMIPMessageHandler {
 
     protected:
         std::shared_ptr<KMIPDatabase> spkd;
+        std::string sPlaceHolder;
 };
 
 

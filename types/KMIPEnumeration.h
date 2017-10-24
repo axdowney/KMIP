@@ -19,6 +19,9 @@
 #include <crypto++/skipjack.h>
 #define CRYPTOPP_ENABLE_NAMESPACE_WEAK 1
 #include <crypto++/arc4.h>
+#include <crypto++/hmac.h>
+#include <crypto++/sha.h>
+#include <crypto++/md5.h>
 
 
 #include "KMIPNumber.h"
@@ -82,7 +85,7 @@ class KMIPKeyFormatType : public KMIPEnumeration {
     b(Raw,0x1) \
     b(Opaque,0x2) \
     b(PKCS_1,0x3) \
-    b(PKCS_18,0x4) \
+    b(PKCS_8,0x4) \
     b(X_509,0x5) \
     b(ECPrivateKey,0x6) \
     b(TransparentSymmetricKey,0x7) \
@@ -196,6 +199,7 @@ class KMIPRecommendedCurve : public KMIPEnumeration {
 
     DECLARE_KMIPENUM_LIST(VALUE, RECOMMENDED_CURVE_LIST);
     KMIPRecommendedCurve(uint32_t eValue);
+    int CurveToNID(uint32_t eValue);
 };
 
 class KMIPCertificateType : public KMIPEnumeration {
@@ -307,7 +311,7 @@ class KMIPCryptographicAlgorithm : public KMIPEnumeration {
     b(HMACSHA224,0x8)               \
     b(HMACSHA256,0x9) \
     b(HMACSHA384,0x0000000A) \
-    b(HMACSHA512,0x0000000E000B) \
+    b(HMACSHA512,0x0000000B) \
     b(HMACMD5,0x0000000C) \
     b(DH,0x0000000D) \
     b(ECDH,0x0000000E) \
@@ -360,6 +364,7 @@ class KMIPCryptographicAlgorithm : public KMIPEnumeration {
     KMIPCryptographicAlgorithm(uint32_t eValue);
     static bool isFixedLength(uint32_t iAlg);
     static bool isSymmetric(uint32_t iAlg);
+    static bool isAsymmetric(uint32_t iAlg);
 };
 
 class KMIPBlockCipherMode : public KMIPEnumeration {

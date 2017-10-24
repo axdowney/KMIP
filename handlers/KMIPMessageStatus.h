@@ -27,6 +27,7 @@ class KMIPMessageStatus {
         GETSET(AsynchronousIndicator, bool, bAsync);
         GETSET(AttCapInd, bool, bAttCapIndicator);
         GETSET(BatchErrorContOpt, int32_t, eErrContOpt);
+        GETSET(PlaceHolderID, std::string, sPlaceHolderID);
 
     protected:
         KMIPResponseMessage krm;

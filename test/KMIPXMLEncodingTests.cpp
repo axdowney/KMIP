@@ -10,6 +10,7 @@
 #include "KMIPUtils.h"
 
 #include "KMIPXMLEncoding.h"
+#include "KMIPTestCaseValidator.h"
 
 TEST(KMIPXMLEncoding, DecodeEncode) {
     std::string sFile = "./test/KMIPXMLTest1.xml";
@@ -29,4 +30,18 @@ TEST(KMIPXMLEncoding, DecodeEncode) {
     std::cerr << "XML Decoded Again :" << KMIPUtils::printFieldString(upkf2.get()) << std::endl;
     EXPECT_TRUE(*upkf == *upkf2);
     EXPECT_EQ(*upkf, *upkf2);
+}
+
+TEST(KMIPXMLEncoding, Validate) {
+    std::string sFile = "./test/KMIPXMLTest1.xml";
+    std::ifstream t(sFile);
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+    std::string sXML_In = buffer.str();
+    std::string sExtra;
+    KMIPXMLEncoding kxe;
+    KMIPFieldUP upkf = kxe.decodeKMIP(sXML_In, sExtra);
+    KMIPTestCaseValidator ktcv;
+    EXPECT_TRUE(ktcv.loadXML(sXML_In));
+    EXPECT_TRUE(ktcv.matchesExpected(upkf.get()));
 }
