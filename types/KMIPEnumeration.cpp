@@ -56,78 +56,215 @@ IMPLEMENT_ENUM_TO_STRING(KMIPRecommendedCurve, VALUE, Unknown, "", RECOMMENDED_C
 
 int KMIPRecommendedCurve::CurveToNID(uint32_t eValue) {
     int iRet = Unknown;
-#if 0
+#if 1
     switch (eValue) {
         case P_192:
-            iRet = NID_p
+            iRet = NID_X9_62_prime192v1;
+            break;
+        case K_163:
+            iRet = NID_sect163k1;
+            break;
+        case B_163:
+            iRet = NID_sect163r2;
+            break;
+        case P_224:
+            iRet = NID_secp224r1;
+            break;
+        case K_233:
+            iRet = NID_sect233k1;
+            break;
+        case B_233:
+            iRet = NID_sect233r1;
+            break;
+        case P_256:
+            iRet = NID_X9_62_prime256v1;
+            break;
+        case K_283:
+            iRet = NID_sect283k1;
+            break;
+        case B_283:
+            iRet = NID_sect283r1;
+            break;
+        case P_384:
+            iRet = NID_secp384r1;
+            break;
+        case K_409:
+            iRet = NID_sect409k1;
+            break;
+        case B_409:
+            iRet = NID_sect409r1;
+            break;
+        case P_521:
+            iRet = NID_secp521r1;
+            break;
+        case K_571:
+            iRet = NID_sect571k1;
+            break;
+        case B_571:
+            iRet = NID_sect571k1;
+            break;
+        case SECP112R1:
+            iRet = NID_secp112r1;
+            break;
+        case SECP112R2:
+            iRet = NID_secp112r2;
+            break;
+        case SECP128R1:
+            iRet = NID_secp128r1;
+            break;
+        case SECP128R2:
+            iRet = NID_secp128r2;
+            break;
+        case SECP160K1:
+            iRet = NID_secp160k1;
+            break;
+        case SECP160R1:
+            iRet = NID_secp160r1;
+            break;
+        case SECP160R2:
+            iRet = NID_secp160r2;
+            break;
+        case SECP192K1:
+            iRet = NID_secp192k1;
+            break;
+        case SECP224K1:
+            iRet = NID_secp224k1;
+            break;
+        case SECP256K1:
+            iRet = NID_secp256k1;
+            break;
+        case SECT113R1:
+            iRet = NID_sect113r1;
+            break;
+        case SECT113R2:
+            iRet = NID_sect113r2;
+            break;
+        case SECT131R1:
+            iRet = NID_sect131r1;
+            break;
+        case SECT131R2:
+            iRet = NID_sect131r2;
+            break;
+        case SECT163R1:
+            iRet = NID_sect163r1;
+            break;
+        case SECT193R1:
+            iRet = NID_sect193r1;
+            break;
+        case SECT193R2:
+            iRet = NID_sect193r2;
+            break;
+        case SECT239K1:
+            iRet = NID_sect239k1;
+            break;
+        case ANSIX9P192V2:
+            iRet = NID_X9_62_prime192v2;
+            break;
+        case ANSIX9P192V3:
+            iRet = NID_X9_62_prime192v3;
+            break;
+        case ANSIX9P239V1:
+            iRet = NID_X9_62_prime239v1;
+            break;
+        case ANSIX9P239V2:
+            iRet = NID_X9_62_prime239v2;
+            break;
+        case ANSIX9P239V3:
+            iRet = NID_X9_62_prime239v3;
+            break;
+        case ANSIX9C2PNB163V1:
+            iRet = NID_X9_62_c2pnb163v1;
+            break;
+        case ANSIX9C2PNB163V2:
+            iRet = NID_X9_62_c2pnb163v2;
+            break;
+        case ANSIX9C2PNB163V3:
+            iRet = NID_X9_62_c2pnb163v3;
+            break;
+        case ANSIX9C2PNB176V1:
+            iRet = NID_X9_62_c2pnb176v1;
+            break;
+        case ANSIX9C2TNB191V1:
+            iRet = NID_X9_62_c2tnb191v1;
+            break;
+        case ANSIX9C2TNB191V2:
+            iRet = NID_X9_62_c2tnb191v2;
+            break;
+        case ANSIX9C2TNB191V3:
+            iRet = NID_X9_62_c2tnb191v3;
+            break;
+        case ANSIX9C2PNB208W1:
+            iRet = NID_X9_62_c2pnb208w1;
+            break;
+        case ANSIX9C2TNB239V1:
+            iRet = NID_X9_62_c2tnb239v1;
+            break;
+        case ANSIX9C2TNB239V2:
+            iRet = NID_X9_62_c2tnb239v2;
+            break;
+        case ANSIX9C2TNB239V3:
+            iRet = NID_X9_62_c2tnb239v3;
+            break;
+        case ANSIX9C2PNB272W1:
+            iRet = NID_X9_62_c2pnb272w1;
+            break;
+        case ANSIX9C2PNB304W1:
+            iRet = NID_X9_62_c2pnb304w1;
+            break;
+        case ANSIX9C2TNB359V1:
+            iRet = NID_X9_62_c2tnb359v1;
+            break;
+        case ANSIX9C2PNB368W1:
+            iRet = NID_X9_62_c2pnb368w1;
+            break;
+        case ANSIX9C2TNB431R1:
+            iRet = NID_X9_62_c2tnb431r1;
+            break;
+        case BRAINPOOLP160R1:
+            iRet = NID_brainpoolP160r1;
+            break;
+        case BRAINPOOLP160T1:
+            iRet = NID_brainpoolP160t1;
+            break;
+        case BRAINPOOLP192R1:
+            iRet = NID_brainpoolP192r1;
+            break;
+        case BRAINPOOLP192T1:
+            iRet = NID_brainpoolP192t1;
+            break;
+        case BRAINPOOLP224R1:
+            iRet = NID_brainpoolP224r1;
+            break;
+        case BRAINPOOLP224T1:
+            iRet = NID_brainpoolP224t1;
+            break;
+        case BRAINPOOLP256R1:
+            iRet = NID_brainpoolP256r1;
+            break;
+        case BRAINPOOLP256T1:
+            iRet = NID_brainpoolP256t1;
+            break;
+        case BRAINPOOLP320R1:
+            iRet = NID_brainpoolP320r1;
+            break;
+        case BRAINPOOLP320T1:
+            iRet = NID_brainpoolP320t1;
+            break;
+        case BRAINPOOLP384R1:
+            iRet = NID_brainpoolP384r1;
+            break;
+        case BRAINPOOLP384T1:
+            iRet = NID_brainpoolP384t1;
+            break;
+        case BRAINPOOLP512R1:
+            iRet = NID_brainpoolP512r1;
+            break;
+        case BRAINPOOLP512T1:
+            iRet = NID_brainpoolP512t1;
+            break;
+        default:
+            break;
 
-    b(K_163,0x2) \
-    b(B_163,0x3) \
-    b(P_224,0x4) \
-    b(K_233,0x5) \
-    b(B_233,0x6) \
-    b(P_256,0x7) \
-    b(K_283,0x8) \
-    b(B_283,0x9) \
-    b(P_384,0x0000000A) \
-    b(K_409,0x0000000B) \
-    b(B_409,0x0000000C) \
-    b(P_521,0x0000000D) \
-    b(K_571,0x0000000E) \
-    b(B_571,0x0000000F) \
-    b(SECP112R1,0x10) \
-    b(SECP112R2,0x11) \
-    b(SECP128R1,0x12) \
-    b(SECP128R2,0x13) \
-    b(SECP160K1,0x14) \
-    b(SECP160R1,0x15) \
-    b(SECP160R2,0x16) \
-    b(SECP160K1ECP192K1,0x17) \
-    b(SECP224K1,0x18) \
-    b(SECP256K1,0x19) \
-    b(SECT113R1,0x0000001A) \
-    b(SECT113R2,0x0000001B) \
-    b(SECT131R1,0x0000001C) \
-    b(SECT131R2,0x0000001D) \
-    b(SECT163R1,0x0000001E) \
-    b(SECT193R1,0x0000001C0001F) \
-    b(SECT193R2,0x20) \
-    b(SECT239K1,0x21) \
-    b(ANSIX9P192V2,0x22) \
-    b(ANSIX9P192V3,0x23) \
-    b(ANSIX9P239V1,0x24) \
-    b(ANSIX9P239V2,0x225) \
-    b(ANSIX9P239V3,0x26) \
-    b(ANSIX9C2PNB163V1,0x27) \
-    b(ANSIX9C2PNB163V2,0x28) \
-    b(ANSIX9C2PNB163V3,0x29) \
-    b(ANSIX9C2PNB176V1,0x0000002A) \
-    b(ANSIX9C2TNB191V1,0x0000002B) \
-    b(ANSIX9C2TNB191V2,0x0000002C)      \
-    b(ANSIX9C2TNB191V3,0x0000002D) \
-    b(ANSIX9C2PNB208W1,0x0000002E) \
-    b(ANSIX9C2TNB239V1,0x0000002F) \
-    b(ANSIX9C2TNB239V2,0x30) \
-    b(ANSIX9C2TNB239V1TNB239V3,0x31) \
-    b(ANSIX9C2PNB272W1,0x32) \
-    b(ANSIX9C2PNB304W1,0x33) \
-    b(ANSIX9C2TNB359V1,0x34) \
-    b(ANSIX9C2PNB368W1,0x35) \
-    b(ANSIX9C2TNB239V1TNB239V3B431R1,0x36) \
-    b(BRAINPOOLP160R1,0x37) \
-    b(BRAINPOOLP160T1,0x38) \
-    b(BRAINPOOLP192R1,0x39) \
-    b(BRAINPOOLP192T1,0x0000003A) \
-    b(BRAINPOOLP192R1224R1,0x0000003B) \
-    b(BRAINPOOLP224T1,0x0000003C) \
-    b(BRAINPOOLP256R1,0x0000003D) \
-    b(BRAINPOOLP256T1,0x0000003E) \
-    b(BRAINPOOLP320R1,0x0000003C000003F) \
-    b(BRAINPOOLP320T1,0x40) \
-    b(BRAINPOOLP384R1,0x41) \
-    b(BRAINPOOLP320T1NPOOLP384T1,0x42) \
-    b(BRAINPOOLP512R1,0x43) \
-    b(BRAINPOOLP512T1,0x44) \
     }
 #endif
     return iRet;

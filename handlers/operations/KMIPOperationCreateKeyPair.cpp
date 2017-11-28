@@ -8,6 +8,8 @@
 #include <openssl/ec.h>
 #include <openssl/ecdsa.h>
 #include <openssl/ecdh.h>
+#include <openssl/bio.h>
+#include <openssl/err.h>
 #include <cstdlib>
 #include <crypto++/aes.h>
 #include <crypto++/secblock.h>
@@ -303,7 +305,7 @@ bool KMIPOperationCreateKeyPair::generateKeyPair(int iAlg, int iBits, std::strin
 
                     int iPriv = BN_num_bytes(dh->priv_key);
                     unsigned char *pucPriv = new unsigned char[iPriv];
-                    BN_bn2bin(dh->priv_key, pucPub);
+                    BN_bn2bin(dh->priv_key, pucPriv);
                     sPriv = std::string((char *) pucPriv, iPriv);
                     delete [] pucPriv;
                 }
@@ -312,19 +314,86 @@ bool KMIPOperationCreateKeyPair::generateKeyPair(int iAlg, int iBits, std::strin
             }
             break;
         case KMIPCryptographicAlgorithm::EC:
-            break;
         case KMIPCryptographicAlgorithm::ECDSA:
+        case KMIPCryptographicAlgorithm::ECDH:
+        case KMIPCryptographicAlgorithm::ECMQV:
             {
+                BIO               *outbio = NULL;
                 EC_KEY            *myecc  = NULL;
                 EVP_PKEY          *pkey   = NULL;
                 int               eccgrp;
 
+              /* ---------------------------------------------------------- *
+	       * These function calls initialize openssl for correct work.  *
+	       * ---------------------------------------------------------- */
+	      OpenSSL_add_all_algorithms();
+	      ERR_load_BIO_strings();
+	      ERR_load_crypto_strings();
+
+	      /* ---------------------------------------------------------- *
+	       * Create the Input/Output BIO's.                             *
+	       * ---------------------------------------------------------- */
+	      outbio  = BIO_new(BIO_s_file());
+	      outbio = BIO_new_fp(stdout, BIO_NOCLOSE);
+
+	      /* ---------------------------------------------------------- *
+	       * Create a EC key sructure, setting the group type from NID  *
+	       * ---------------------------------------------------------- */
+	      eccgrp = KMIPRecommendedCurve::CurveToNID(iCurve);
+	      myecc = EC_KEY_new_by_curve_name(eccgrp);
+
+	      /* -------------------------------------------------------- *
+	       * For cert signing, we use  the OPENSSL_EC_NAMED_CURVE flag*
+	       * ---------------------------------------------------------*/
+	      EC_KEY_set_asn1_flag(myecc, OPENSSL_EC_NAMED_CURVE);
+
+	      /* -------------------------------------------------------- *
+	       * Create the public/private EC key pair here               *
+	       * ---------------------------------------------------------*/
+	      if (! (EC_KEY_generate_key(myecc)))
+		BIO_printf(outbio, "Error generating the ECC key.");
+
+	      /* -------------------------------------------------------- *
+	       * Converting the EC key into a PKEY structure let us       *
+	       * handle the key just like any other key pair.             *
+	       * ---------------------------------------------------------*/
+	      pkey=EVP_PKEY_new();
+	      if (!EVP_PKEY_assign_EC_KEY(pkey,myecc)) {
+                    BIO_printf(outbio, "Error assigning ECC key to EVP_PKEY structure.");
+              } else {
+                    const BIGNUM *bn = EC_KEY_get0_private_key(myecc);
+                    int iPriv = BN_num_bytes(bn);
+                    unsigned char *pucPriv = new unsigned char[iPriv];
+                    BN_bn2bin(bn, pucPriv);
+                    sPriv = std::string((char *) pucPriv, iPriv);
+                    delete [] pucPriv;
+
+
+
+                    const EC_POINT *ecp = EC_KEY_get0_public_key(myecc);
+                    BIGNUM bnPub;
+                    EC_POINT_point2bn(EC_KEY_get0_group(myecc), ecp,
+                            EC_KEY_get_conv_form(myecc), &bnPub, nullptr);
+                    
+                    int iPub = BN_num_bytes(&bnPub);
+                    unsigned char *pucPub = new unsigned char[iPub];
+                    BN_bn2bin(&bnPub, pucPub);
+                    sPub = std::string((char *) pucPub, iPub);
+                    delete [] pucPub;
+
+              }
+
+
+              /* ---------------------------------------------------------- *
+               * Free up all structures                                     *
+               * ---------------------------------------------------------- */
+                EVP_PKEY_free(pkey);
+                EC_KEY_free(myecc);
+                BIO_free_all(outbio);
             }
-        case KMIPCryptographicAlgorithm::ECDH:
-        case KMIPCryptographicAlgorithm::ECMQV:
             break;
         default:
             break;
     }
     return bOK;
-}
+}	
